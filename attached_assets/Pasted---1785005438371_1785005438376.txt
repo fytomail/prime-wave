@@ -1,0 +1,452 @@
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                     PRIME WAVE COMPLETE ECOSYSTEM                                          ║
+║                     Learn → Practice → Build → AI Validate → Certify → Rank → Hire                         ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+START
+ │
+ ▼
+──────────────────────────────────────────────────────────────────────────────
+STUDENT AUTHENTICATION
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ├── Register
+ │      ├── Email
+ │      ├── Mobile Number
+ │      ├── Google Login
+ │      └── University Login
+ │
+ ├── Login
+ │      ├── Username
+ │      ├── Password
+ │      └── OTP Verification
+ │
+ ▼
+Student Profile Creation
+ │
+ ├── Personal Details
+ ├── Education Details
+ ├── Skills
+ ├── Preferred Role
+ ├── Preferred Language
+ └── Portfolio Created
+ │
+ ▼
+AI Diagnostic Skill Assessment
+ │
+ ├── Aptitude
+ ├── Logical Thinking
+ ├── Communication
+ ├── Technical Knowledge
+ ├── Programming Basics
+ ├── Product Thinking
+ └── Industry Readiness Baseline
+ │
+ ▼
+AI Personalized Learning Roadmap Generated
+ │
+ ▼
+SEMESTER 1 UNLOCK
+(Product Foundation)
+ │
+ ▼
+──────────────────────────────────────────────────────────────────────────────
+EVERY SEMESTER FOLLOWS THE SAME AI LEARNING CYCLE
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ▼
+Module Unlock
+ │
+ ▼
+Topic Unlock
+ │
+ ▼
+AI Teacher
+ │
+ ├── Concept Explanation
+ ├── Visual Animations
+ ├── Real Industry Examples
+ ├── Interactive Notes
+ ├── Flash Cards
+ ├── Mind Maps
+ ├── Unlimited Doubt Support
+ └── Multi-language Explanation
+ │
+ ▼
+AI Practice
+ │
+ ├── Interactive Exercises
+ ├── Coding Sandbox
+ ├── UI/UX Workspace
+ ├── Architecture Practice
+ ├── Documentation Practice
+ ├── Debugging Assistant
+ ├── Vibe Coding Assistant
+ └── AI Mentor Guidance
+ │
+ ▼
+AI Quiz
+ │
+ ▼
+AI Practical Assignment
+ │
+ ▼
+Student Submission
+ │
+ ▼
+AI Evaluation Engine
+ │
+ ├── Accuracy
+ ├── Logic
+ ├── Problem Solving
+ ├── Code Quality
+ ├── UI/UX Quality
+ ├── Architecture Quality
+ ├── Documentation
+ ├── Security
+ ├── Performance
+ ├── Best Practices
+ └── Industry Standards
+ │
+ ▼
+PASS ?
+ │
+ ├────────────── NO
+ │                 │
+ │                 ▼
+ │        AI Feedback
+ │        Weak Area Analysis
+ │        Personalized Improvement Plan
+ │        More Practice
+ │        Retry Assignment
+ │
+ └────────────── YES
+                   │
+                   ▼
+            Topic Completed
+                   │
+                   ▼
+            Next Topic Unlock
+                   │
+                   ▼
+          Module Completed
+                   │
+                   ▼
+           AI Mini Project
+                   │
+                   ▼
+          AI Project Mentor
+                   │
+          ├── Requirement Guidance
+          ├── Milestone Planning
+          ├── Step-by-Step Help
+          ├── Debugging
+          ├── Best Practices
+          ├── Architecture Review
+          ├── UI Review
+          └── Code Review
+                   │
+                   ▼
+          Project Submission
+                   │
+                   ▼
+          AI Project Evaluation
+                   │
+                   ▼
+          Module Score Updated
+                   │
+                   ▼
+      Repeat Until All Modules Complete
+                   │
+                   ▼
+──────────────────────────────────────────────────────────────────────────────
+SEMESTER ASSESSMENT
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ├── Theory Assessment
+ ├── Practical Assessment
+ ├── Scenario-Based Problems
+ ├── AI Viva Interview
+ ├── Communication Assessment
+ ├── Portfolio Review
+ ├── Mini Project Review
+ └── Industry Validation
+ │
+ ▼
+AI Semester Evaluation
+ │
+ ▼
+Requirement Validation
+ │
+ ├── All Topics Completed
+ ├── All Modules Completed
+ ├── All Assignments Approved
+ ├── Mini Project Approved
+ ├── Practice Completed
+ ├── Quiz Score ≥ Required
+ ├── AI Evaluation Passed
+ ├── Portfolio Updated
+ └── Communication Passed
+ │
+ ▼
+PASS ?
+ │
+ ├────────────── NO
+ │                 │
+ │                 ▼
+ │         Semester Locked
+ │         AI Improvement Roadmap
+ │         Retry Evaluation
+ │
+ └────────────── YES
+                   │
+                   ▼
+           Semester Completed
+                   │
+           Credits Awarded
+                   │
+           AI Certificate Generated
+                   │
+           Portfolio Updated
+                   │
+           Industry Readiness Updated
+                   │
+                   ▼
+           Unlock Next Semester
+                   │
+                   ▼
+──────────────────────────────────────────────────────────────────────────────
+SEMESTER 1 → SEMESTER 7
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ├── Semester 1 : Product Foundation
+ ├── Semester 2 : Research & Requirements
+ ├── Semester 3 : UI / UX Design
+ ├── Semester 4 : System Architecture
+ ├── Semester 5 : Development
+ ├── Semester 6 : Testing & QA
+ └── Semester 7 : Deployment & DevOps
+ │
+ ▼
+All Seven Semesters Completed
+ │
+ ▼
+180 Credits Earned
+ │
+ ▼
+Portfolio Ready
+ │
+ ▼
+Unlock Semester 8
+ │
+ ▼
+──────────────────────────────────────────────────────────────────────────────
+SEMESTER 8 - INDUSTRY CAPSTONE PROJECT
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ▼
+Choose Industry Project
+ │
+ ├── AI Hiring Platform
+ ├── Hospital Management
+ ├── Banking System
+ ├── ERP System
+ ├── E-Commerce
+ ├── Food Delivery
+ ├── Ride Booking
+ ├── CRM
+ ├── HRMS
+ └── Custom Industry Project
+ │
+ ▼
+AI Skill Eligibility Verification
+ │
+ ├── Semester Credits
+ ├── Module Scores
+ ├── Practical Performance
+ ├── AI Evaluation History
+ ├── Technical Skills
+ ├── Project Readiness
+ └── Industry Readiness
+ │
+ ▼
+Eligible ?
+ │
+ ├────────────── NO
+ │                 │
+ │                 ▼
+ │       Missing Skill Report
+ │       Personalized Learning Plan
+ │       Practice Missing Modules
+ │       Retry Eligibility
+ │
+ └────────────── YES
+                   │
+                   ▼
+          Project Workspace Created
+                   │
+                   ▼
+          AI Industry Mentor Assigned
+                   │
+                   ▼
+Requirement Analysis
+ │
+ ▼
+Research
+ │
+ ▼
+Planning
+ │
+ ▼
+UI/UX Design
+ │
+ ▼
+Architecture
+ │
+ ▼
+Database Design
+ │
+ ▼
+API Development
+ │
+ ▼
+Frontend Development
+ │
+ ▼
+Backend Development
+ │
+ ▼
+Testing
+ │
+ ▼
+Deployment
+ │
+ ▼
+Documentation
+ │
+ ▼
+Final Project Submission
+ │
+ ▼
+──────────────────────────────────────────────────────────────────────────────
+AI FINAL INDUSTRY EVALUATION
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ├── Requirement Completion
+ ├── Product Quality
+ ├── UI/UX
+ ├── Architecture
+ ├── Database
+ ├── API
+ ├── Frontend
+ ├── Backend
+ ├── Testing
+ ├── Security
+ ├── Performance
+ ├── Accessibility
+ ├── Documentation
+ ├── Git Workflow
+ ├── Deployment
+ ├── Problem Solving
+ ├── Innovation
+ └── Industry Best Practices
+ │
+ ▼
+AI Industry Readiness Report
+ │
+ ▼
+Prime Wave Professional Score (PPS)
+ │
+ ├── Semester Credits
+ ├── Module Performance
+ ├── AI Tasks
+ ├── AI Evaluations
+ ├── Capstone Project
+ ├── Code Quality
+ ├── Communication
+ └── Industry Readiness
+ │
+ ▼
+AI Professional Certificate Generated
+ │
+ ▼
+Recruiter Ready Portfolio Generated
+ │
+ ▼
+Global Leaderboard Ranking
+ │
+ ▼
+Visible To
+ │
+ ├── Student
+ ├── University
+ ├── Recruiters
+ ├── HR Portal
+ └── IT Companies
+ │
+ ▼
+──────────────────────────────────────────────────────────────────────────────
+COMPANY / HR PORTAL
+──────────────────────────────────────────────────────────────────────────────
+ │
+ ▼
+Company Registration & Verification
+ │
+ ▼
+HR Dashboard
+ │
+ ▼
+Create Job Requirement
+ │
+ ▼
+AI Reads Job Description
+ │
+ ▼
+Skill Extraction
+ │
+ ▼
+AI Candidate Matching
+ │
+ ├── Skills Match
+ ├── Semester Credits
+ ├── PPS Score
+ ├── Industry Readiness
+ ├── Communication
+ ├── Project Quality
+ ├── Technology Stack
+ ├── GitHub
+ ├── Portfolio
+ └── Certificate Verification
+ │
+ ▼
+Top Ranked Candidates
+ │
+ ▼
+HR Reviews Candidate Profile
+ │
+ ▼
+Interview Scheduling
+ │
+ ▼
+Technical Interview
+ │
+ ▼
+HR Interview
+ │
+ ▼
+Offer Letter
+ │
+ ▼
+HIRED
+ │
+ ▼
+Company Feedback Submitted
+ │
+ ▼
+AI Learns From Hiring Outcome
+ │
+ ▼
+Platform Improves Future Evaluations
+ │
+ ▼
+END

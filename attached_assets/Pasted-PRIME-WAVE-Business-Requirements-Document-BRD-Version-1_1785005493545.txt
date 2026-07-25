@@ -1,0 +1,315 @@
+PRIME WAVE
+Business Requirements Document (BRD)
+Version 1.0
+1. Executive Summary
+Product Name
+
+Prime Wave
+
+Product Vision
+
+Prime Wave is an AI-powered Software Engineering Learning, Assessment, Certification, and Hiring Platform that transforms students into industry-ready software professionals through structured semester-based learning, AI mentorship, real-world projects, automated evaluation, recruiter verification, and direct hiring.
+
+Unlike traditional EdTech platforms that focus only on learning, Prime Wave creates a complete ecosystem connecting students, universities, AI mentors, recruiters, HR teams, and companies.
+
+2. Business Problem
+
+Current problems include:
+
+Students learn theory but lack practical skills.
+Certificates often do not reflect real abilities.
+Recruiters spend significant time screening candidates.
+Universities have limited visibility into students' industry readiness.
+Companies struggle to identify job-ready freshers.
+Students build portfolios without standardized evaluation.
+
+Prime Wave addresses these issues by introducing AI-driven learning, validation, certification, and hiring.
+
+3. Business Objectives
+Build an AI Software Engineering Academy.
+Deliver industry-level practical education.
+Evaluate every learning activity using AI.
+Generate AI-verified portfolios.
+Create a standardized Professional Score.
+Enable recruiters to hire based on verified skills.
+Reduce hiring time.
+Improve placement success.
+Increase student employability.
+4. Product Scope
+
+The platform consists of:
+
+Student Platform
+Registration
+Authentication
+AI Learning
+Practice
+Projects
+Portfolio
+Certificates
+Leaderboard
+AI Platform
+AI Teacher
+AI Mentor
+AI Evaluator
+AI Interviewer
+AI Career Coach
+AI Recruiter
+University Portal
+Student Tracking
+Semester Progress
+Analytics
+Placement Dashboard
+Recruiter Portal
+Candidate Search
+AI Recommendations
+Hiring Dashboard
+Skill Reports
+Admin Portal
+User Management
+Course Management
+AI Configuration
+Analytics
+Payments
+5. Stakeholders
+Students
+Universities
+Faculty
+Recruiters
+HR Teams
+Companies
+Platform Administrators
+AI Evaluation Engine
+6. User Roles
+Student
+Mentor
+University Admin
+HR
+Recruiter
+Company Admin
+Platform Admin
+Super Admin
+7. End-to-End Business Workflow
+
+This section contains the single flow you designed:
+
+Student Registration
+Authentication
+Profile Creation
+AI Diagnostic Assessment
+Personalized Learning Roadmap
+Semester 1 Unlock
+AI Learning
+AI Practice
+AI Assignments
+AI Evaluation
+Module Completion
+Semester Assessment
+Semester Certification
+Semester Credit Award
+Semester Unlock
+Repeat for Semesters 1–7
+Unlock Semester 8
+AI Skill Verification
+Industry Capstone Project
+AI Mentor Guidance
+Final Industry Evaluation
+Professional Score Calculation
+AI Certificate
+Portfolio Generation
+Leaderboard Ranking
+Recruiter Portal
+AI Candidate Matching
+Interview
+Hiring
+Feedback Loop
+8. Functional Requirements
+
+This section details every function in the platform, including:
+
+Authentication
+Dashboard
+AI Teacher
+AI Practice
+AI Mentor
+AI Evaluation
+Module Management
+Semester Management
+Credits
+Certificates
+Portfolio
+Leaderboard
+Company Portal
+HR Portal
+AI Job Matching
+Notifications
+Reports
+Analytics
+9. Semester Framework
+
+Document the objectives, modules, deliverables, skills, and AI evaluation criteria for each of the seven learning semesters and the eighth industry capstone semester.
+
+10. AI Learning Engine
+
+Describe:
+
+AI Teacher
+Adaptive explanations
+Practice generation
+Hint system
+Personalized study plans
+Progress tracking
+Readiness prediction
+11. AI Evaluation Engine
+
+Explain how AI evaluates:
+
+Theory
+Practical tasks
+Code quality
+UI/UX
+Documentation
+Security
+Testing
+Communication
+Problem solving
+Industry standards
+12. AI Project Mentor
+
+Cover:
+
+Requirement analysis
+Milestone planning
+Progress tracking
+Code review
+Architecture review
+Performance recommendations
+Security recommendations
+13. Semester Unlock Logic
+
+Define:
+
+Completion rules
+Passing criteria
+Retry workflow
+Improvement plans
+Credit allocation
+Certificates
+14. Industry Capstone
+
+Include:
+
+Project catalogue
+Eligibility checks
+Skill verification
+AI mentorship
+Final evaluation
+Industry readiness report
+15. Prime Wave Professional Score (PPS)
+
+Document the scoring model:
+
+Semester Credits
+Module Performance
+Practical Tasks
+AI Evaluations
+Capstone Project
+Code Quality
+Communication
+Industry Readiness
+16. Leaderboard
+
+Specify:
+
+Ranking algorithm
+Achievement tiers
+University rankings
+Global rankings
+Visibility
+Filters
+17. Recruiter & HR Portal
+
+Describe:
+
+Company onboarding
+Job posting
+AI candidate matching
+Candidate profiles
+Skill reports
+Interview workflow
+Hiring decisions
+18. Portfolio & Certification
+
+Define:
+
+Resume generation
+Project showcase
+Skills summary
+AI verification
+QR verification
+Certificate lifecycle
+19. Reports & Analytics
+
+Include dashboards for:
+
+Students
+Universities
+Recruiters
+Companies
+Platform Admins
+20. Notifications
+
+Support:
+
+Email
+SMS
+Push notifications
+In-app alerts
+21. Non-Functional Requirements
+
+Cover:
+
+Performance
+Scalability
+Security
+Availability
+Accessibility
+Reliability
+Maintainability
+Compliance
+22. Integrations
+
+Potential integrations include:
+
+Google Authentication
+GitHub
+LinkedIn
+Cloud deployment providers
+AI models
+Email services
+SMS gateways
+Payment gateways
+Video conferencing
+23. Success Metrics
+
+Measure:
+
+Student completion rate
+Semester pass rate
+Portfolio quality
+Industry readiness score
+Placement rate
+Recruiter satisfaction
+Hiring success rate
+24. Future Roadmap
+
+Potential expansions:
+
+AI Interview Simulator
+AI Pair Programming
+Team Projects
+Open-source contributions
+Hackathons
+Global university partnerships
+Enterprise hiring solutions
+Mobile application

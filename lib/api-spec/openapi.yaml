@@ -3,20 +3,42 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Prime Wave API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: students
+    description: Student management
+  - name: semesters
+    description: Semester and module management
+  - name: topics
+    description: Topic and learning content
+  - name: assignments
+    description: Assignments and submissions
+  - name: projects
+    description: Module mini-projects and capstone
+  - name: certificates
+    description: Certificates and credits
+  - name: portfolio
+    description: Portfolio management
+  - name: leaderboard
+    description: Global and university leaderboards
+  - name: jobs
+    description: Job postings and HR portal
+  - name: companies
+    description: Company management
+  - name: dashboard
+    description: Dashboard summary endpoints
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +46,1157 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── STUDENTS ───────────────────────────────────────────────────────────────
+  /students:
+    get:
+      operationId: listStudents
+      tags: [students]
+      summary: List students
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+        - in: query
+          name: search
+          schema: { type: string }
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Create student profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get student by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    patch:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update student profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}/stats:
+    get:
+      operationId: getStudentStats
+      tags: [students]
+      summary: Get student performance stats
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Student stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentStats"
+
+  # ─── SEMESTERS ──────────────────────────────────────────────────────────────
+  /semesters:
+    get:
+      operationId: listSemesters
+      tags: [semesters]
+      summary: List all semesters
+      responses:
+        "200":
+          description: List of semesters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Semester"
+
+  /semesters/{id}:
+    get:
+      operationId: getSemester
+      tags: [semesters]
+      summary: Get semester with modules
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Semester
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Semester"
+
+  /semesters/{id}/modules:
+    get:
+      operationId: listModules
+      tags: [semesters]
+      summary: List modules for a semester
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Modules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Module"
+
+  /students/{studentId}/semesters/{semesterId}/progress:
+    get:
+      operationId: getSemesterProgress
+      tags: [semesters]
+      summary: Get student progress in a semester
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema: { type: integer }
+        - in: path
+          name: semesterId
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SemesterProgress"
+
+  # ─── TOPICS ─────────────────────────────────────────────────────────────────
+  /modules/{moduleId}/topics:
+    get:
+      operationId: listTopics
+      tags: [topics]
+      summary: List topics in a module
+      parameters:
+        - in: path
+          name: moduleId
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Topics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Topic"
+
+  /topics/{id}:
+    get:
+      operationId: getTopic
+      tags: [topics]
+      summary: Get a topic with content
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Topic
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topic"
+
+  /topics/{id}/complete:
+    post:
+      operationId: completeTopic
+      tags: [topics]
+      summary: Mark a topic as completed
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TopicCompleteInput"
+      responses:
+        "200":
+          description: Topic completion record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicCompletion"
+
+  # ─── ASSIGNMENTS ────────────────────────────────────────────────────────────
+  /assignments:
+    get:
+      operationId: listAssignments
+      tags: [assignments]
+      summary: List assignments
+      parameters:
+        - in: query
+          name: topicId
+          schema: { type: integer }
+        - in: query
+          name: studentId
+          schema: { type: integer }
+        - in: query
+          name: status
+          schema: { type: string }
+      responses:
+        "200":
+          description: Assignments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Assignment"
+
+  /assignments/{id}:
+    get:
+      operationId: getAssignment
+      tags: [assignments]
+      summary: Get assignment details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Assignment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+
+  /assignments/{id}/submit:
+    post:
+      operationId: submitAssignment
+      tags: [assignments]
+      summary: Submit assignment for AI evaluation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmissionInput"
+      responses:
+        "201":
+          description: Submission result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+
+  /assignments/{id}/evaluation:
+    get:
+      operationId: getAssignmentEvaluation
+      tags: [assignments]
+      summary: Get AI evaluation for an assignment submission
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Evaluation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evaluation"
+
+  # ─── PROJECTS ───────────────────────────────────────────────────────────────
+  /projects:
+    get:
+      operationId: listProjects
+      tags: [projects]
+      summary: List projects
+      parameters:
+        - in: query
+          name: studentId
+          schema: { type: integer }
+        - in: query
+          name: type
+          schema: { type: string }
+        - in: query
+          name: status
+          schema: { type: string }
+      responses:
+        "200":
+          description: Projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+    post:
+      operationId: createProject
+      tags: [projects]
+      summary: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /projects/{id}:
+    get:
+      operationId: getProject
+      tags: [projects]
+      summary: Get project details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    patch:
+      operationId: updateProject
+      tags: [projects]
+      summary: Update project
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  # ─── CERTIFICATES ───────────────────────────────────────────────────────────
+  /certificates:
+    get:
+      operationId: listCertificates
+      tags: [certificates]
+      summary: List certificates for a student
+      parameters:
+        - in: query
+          name: studentId
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Certificates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Certificate"
+
+  /certificates/{id}:
+    get:
+      operationId: getCertificate
+      tags: [certificates]
+      summary: Get certificate by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Certificate
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certificate"
+
+  # ─── PORTFOLIO ──────────────────────────────────────────────────────────────
+  /portfolio/{studentId}:
+    get:
+      operationId: getPortfolio
+      tags: [portfolio]
+      summary: Get student portfolio
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Portfolio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Portfolio"
+
+  # ─── LEADERBOARD ────────────────────────────────────────────────────────────
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [leaderboard]
+      summary: Get global leaderboard
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer }
+        - in: query
+          name: university
+          schema: { type: string }
+        - in: query
+          name: semester
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Leaderboard entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  # ─── JOBS ───────────────────────────────────────────────────────────────────
+  /jobs:
+    get:
+      operationId: listJobs
+      tags: [jobs]
+      summary: List job postings
+      parameters:
+        - in: query
+          name: companyId
+          schema: { type: integer }
+        - in: query
+          name: status
+          schema: { type: string }
+        - in: query
+          name: search
+          schema: { type: string }
+      responses:
+        "200":
+          description: Jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Job"
+    post:
+      operationId: createJob
+      tags: [jobs]
+      summary: Create a job posting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+
+  /jobs/{id}:
+    get:
+      operationId: getJob
+      tags: [jobs]
+      summary: Get job details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Job
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+
+  /jobs/{id}/candidates:
+    get:
+      operationId: getJobCandidates
+      tags: [jobs]
+      summary: Get AI-matched candidates for a job
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Matched candidates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CandidateMatch"
+
+  # ─── COMPANIES ──────────────────────────────────────────────────────────────
+  /companies:
+    get:
+      operationId: listCompanies
+      tags: [companies]
+      summary: List companies
+      responses:
+        "200":
+          description: Companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+    post:
+      operationId: createCompany
+      tags: [companies]
+      summary: Register a company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+
+  /companies/{id}:
+    get:
+      operationId: getCompany
+      tags: [companies]
+      summary: Get company details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Company
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+
+  # ─── DASHBOARD ──────────────────────────────────────────────────────────────
+  /dashboard/student/{studentId}:
+    get:
+      operationId: getStudentDashboard
+      tags: [dashboard]
+      summary: Get student dashboard summary
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentDashboard"
+
+  /dashboard/platform:
+    get:
+      operationId: getPlatformDashboard
+      tags: [dashboard]
+      summary: Get platform-wide analytics
+      responses:
+        "200":
+          description: Platform analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformDashboard"
+
+  /dashboard/hr/{companyId}:
+    get:
+      operationId: getHrDashboard
+      tags: [dashboard]
+      summary: Get HR dashboard for a company
+      parameters:
+        - in: path
+          name: companyId
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: HR dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HrDashboard"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    # ─── STUDENT ──────────────────────────────────────────────────────────────
+    Student:
+      type: object
+      required: [id, name, email, role, status, semesterNumber, ppsScore, creditsEarned]
+      properties:
+        id:             { type: integer }
+        name:           { type: string }
+        email:          { type: string }
+        phone:          { type: ["string", "null"] }
+        avatar:         { type: ["string", "null"] }
+        university:     { type: ["string", "null"] }
+        degree:         { type: ["string", "null"] }
+        skills:
+          type: array
+          items: { type: string }
+        preferredRole:  { type: ["string", "null"] }
+        preferredLang:  { type: ["string", "null"] }
+        role:           { type: string }
+        status:         { type: string }
+        semesterNumber: { type: integer }
+        ppsScore:       { type: number }
+        creditsEarned:  { type: integer }
+        industryReadiness: { type: number }
+        createdAt:      { type: string }
+
+    StudentInput:
+      type: object
+      required: [name, email]
+      properties:
+        name:          { type: string }
+        email:         { type: string }
+        phone:         { type: string }
+        university:    { type: string }
+        degree:        { type: string }
+        skills:
+          type: array
+          items: { type: string }
+        preferredRole: { type: string }
+        preferredLang: { type: string }
+
+    StudentUpdate:
+      type: object
+      properties:
+        name:          { type: string }
+        phone:         { type: string }
+        university:    { type: string }
+        degree:        { type: string }
+        skills:
+          type: array
+          items: { type: string }
+        preferredRole: { type: string }
+        preferredLang: { type: string }
+
+    StudentStats:
+      type: object
+      required: [studentId, totalTopicsCompleted, totalAssignmentsPassed, avgScore, streakDays]
+      properties:
+        studentId:               { type: integer }
+        totalTopicsCompleted:    { type: integer }
+        totalModulesCompleted:   { type: integer }
+        totalAssignmentsPassed:  { type: integer }
+        avgScore:                { type: number }
+        streakDays:              { type: integer }
+        quizPassRate:            { type: number }
+        codeQualityAvg:          { type: number }
+        communicationScore:      { type: number }
+
+    # ─── SEMESTER & MODULE ────────────────────────────────────────────────────
+    Semester:
+      type: object
+      required: [id, number, title, description, creditsRequired, status]
+      properties:
+        id:              { type: integer }
+        number:          { type: integer }
+        title:           { type: string }
+        description:     { type: string }
+        creditsRequired: { type: integer }
+        status:          { type: string }
+        modules:
+          type: array
+          items:
+            $ref: "#/components/schemas/Module"
+
+    Module:
+      type: object
+      required: [id, semesterId, title, description, order, status]
+      properties:
+        id:          { type: integer }
+        semesterId:  { type: integer }
+        title:       { type: string }
+        description: { type: string }
+        order:       { type: integer }
+        status:      { type: string }
+        topicsCount: { type: integer }
+        score:       { type: ["number", "null"] }
+
+    SemesterProgress:
+      type: object
+      required: [semesterId, studentId, completedModules, totalModules, completedTopics, totalTopics, overallScore, status]
+      properties:
+        semesterId:        { type: integer }
+        studentId:         { type: integer }
+        completedModules:  { type: integer }
+        totalModules:      { type: integer }
+        completedTopics:   { type: integer }
+        totalTopics:       { type: integer }
+        overallScore:      { type: number }
+        status:            { type: string }
+        creditsEarned:     { type: ["integer", "null"] }
+
+    # ─── TOPIC ────────────────────────────────────────────────────────────────
+    Topic:
+      type: object
+      required: [id, moduleId, title, order, status]
+      properties:
+        id:          { type: integer }
+        moduleId:    { type: integer }
+        title:       { type: string }
+        description: { type: ["string", "null"] }
+        order:       { type: integer }
+        status:      { type: string }
+        contentType: { type: string }
+        duration:    { type: ["integer", "null"] }
+        isCompleted: { type: boolean }
+
+    TopicCompleteInput:
+      type: object
+      required: [studentId]
+      properties:
+        studentId: { type: integer }
+        quizScore: { type: number }
+        timeSpent: { type: integer }
+
+    TopicCompletion:
+      type: object
+      required: [id, topicId, studentId, completedAt, quizScore]
+      properties:
+        id:          { type: integer }
+        topicId:     { type: integer }
+        studentId:   { type: integer }
+        completedAt: { type: string }
+        quizScore:   { type: number }
+
+    # ─── ASSIGNMENT ───────────────────────────────────────────────────────────
+    Assignment:
+      type: object
+      required: [id, topicId, title, description, type, status, maxScore]
+      properties:
+        id:          { type: integer }
+        topicId:     { type: integer }
+        title:       { type: string }
+        description: { type: string }
+        type:        { type: string }
+        status:      { type: string }
+        maxScore:    { type: number }
+        deadline:    { type: ["string", "null"] }
+        attempts:    { type: integer }
+        maxAttempts: { type: integer }
+
+    SubmissionInput:
+      type: object
+      required: [studentId, content]
+      properties:
+        studentId: { type: integer }
+        content:   { type: string }
+        githubUrl: { type: string }
+        notes:     { type: string }
+
+    Submission:
+      type: object
+      required: [id, assignmentId, studentId, status, submittedAt]
+      properties:
+        id:           { type: integer }
+        assignmentId: { type: integer }
+        studentId:    { type: integer }
+        content:      { type: string }
+        githubUrl:    { type: ["string", "null"] }
+        status:       { type: string }
+        score:        { type: ["number", "null"] }
+        submittedAt:  { type: string }
+
+    Evaluation:
+      type: object
+      required: [id, submissionId, overallScore, passed]
+      properties:
+        id:             { type: integer }
+        submissionId:   { type: integer }
+        overallScore:   { type: number }
+        passed:         { type: boolean }
+        accuracy:       { type: number }
+        logic:          { type: number }
+        codeQuality:    { type: number }
+        documentation:  { type: number }
+        security:       { type: number }
+        performance:    { type: number }
+        bestPractices:  { type: number }
+        feedback:       { type: string }
+        weakAreas:
+          type: array
+          items: { type: string }
+        improvementPlan: { type: ["string", "null"] }
+        evaluatedAt:    { type: string }
+
+    # ─── PROJECT ──────────────────────────────────────────────────────────────
+    Project:
+      type: object
+      required: [id, studentId, title, type, status, createdAt]
+      properties:
+        id:          { type: integer }
+        studentId:   { type: integer }
+        moduleId:    { type: ["integer", "null"] }
+        semesterId:  { type: ["integer", "null"] }
+        title:       { type: string }
+        description: { type: ["string", "null"] }
+        type:        { type: string }
+        status:      { type: string }
+        githubUrl:   { type: ["string", "null"] }
+        score:       { type: ["number", "null"] }
+        techStack:
+          type: array
+          items: { type: string }
+        createdAt:   { type: string }
+        submittedAt: { type: ["string", "null"] }
+
+    ProjectInput:
+      type: object
+      required: [studentId, title, type]
+      properties:
+        studentId:   { type: integer }
+        moduleId:    { type: integer }
+        semesterId:  { type: integer }
+        title:       { type: string }
+        description: { type: string }
+        type:        { type: string }
+        techStack:
+          type: array
+          items: { type: string }
+
+    ProjectUpdate:
+      type: object
+      properties:
+        title:       { type: string }
+        description: { type: string }
+        githubUrl:   { type: string }
+        status:      { type: string }
+        techStack:
+          type: array
+          items: { type: string }
+
+    # ─── CERTIFICATE ──────────────────────────────────────────────────────────
+    Certificate:
+      type: object
+      required: [id, studentId, type, title, issuedAt, creditsAwarded, verificationCode]
+      properties:
+        id:               { type: integer }
+        studentId:        { type: integer }
+        type:             { type: string }
+        title:            { type: string }
+        semesterNumber:   { type: ["integer", "null"] }
+        issuedAt:         { type: string }
+        creditsAwarded:   { type: integer }
+        score:            { type: ["number", "null"] }
+        verificationCode: { type: string }
+        qrCodeUrl:        { type: ["string", "null"] }
+
+    # ─── PORTFOLIO ────────────────────────────────────────────────────────────
+    Portfolio:
+      type: object
+      required: [studentId, ppsScore, creditsEarned, industryReadiness, semestersCompleted]
+      properties:
+        studentId:           { type: integer }
+        studentName:         { type: string }
+        university:          { type: string }
+        ppsScore:            { type: number }
+        creditsEarned:       { type: integer }
+        industryReadiness:   { type: number }
+        semestersCompleted:  { type: integer }
+        certificates:
+          type: array
+          items:
+            $ref: "#/components/schemas/Certificate"
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/Project"
+        skills:
+          type: array
+          items: { type: string }
+        githubUrl:           { type: ["string", "null"] }
+        linkedinUrl:         { type: ["string", "null"] }
+
+    # ─── LEADERBOARD ─────────────────────────────────────────────────────────
+    LeaderboardEntry:
+      type: object
+      required: [rank, studentId, studentName, ppsScore, creditsEarned, semesterNumber, university]
+      properties:
+        rank:            { type: integer }
+        studentId:       { type: integer }
+        studentName:     { type: string }
+        avatar:          { type: ["string", "null"] }
+        university:      { type: string }
+        ppsScore:        { type: number }
+        creditsEarned:   { type: integer }
+        semesterNumber:  { type: integer }
+        industryReadiness: { type: number }
+        badges:
+          type: array
+          items: { type: string }
+
+    # ─── JOB & COMPANY ───────────────────────────────────────────────────────
+    Job:
+      type: object
+      required: [id, companyId, companyName, title, description, status, createdAt]
+      properties:
+        id:           { type: integer }
+        companyId:    { type: integer }
+        companyName:  { type: string }
+        title:        { type: string }
+        description:  { type: string }
+        requiredSkills:
+          type: array
+          items: { type: string }
+        minPpsScore:  { type: ["number", "null"] }
+        minCredits:   { type: ["integer", "null"] }
+        location:     { type: ["string", "null"] }
+        type:         { type: string }
+        status:       { type: string }
+        applicantsCount: { type: integer }
+        createdAt:    { type: string }
+
+    JobInput:
+      type: object
+      required: [companyId, title, description]
+      properties:
+        companyId:    { type: integer }
+        title:        { type: string }
+        description:  { type: string }
+        requiredSkills:
+          type: array
+          items: { type: string }
+        minPpsScore:  { type: number }
+        minCredits:   { type: integer }
+        location:     { type: string }
+        type:         { type: string }
+
+    CandidateMatch:
+      type: object
+      required: [studentId, studentName, matchScore, ppsScore, creditsEarned, semesterNumber]
+      properties:
+        studentId:        { type: integer }
+        studentName:      { type: string }
+        avatar:           { type: ["string", "null"] }
+        university:       { type: string }
+        matchScore:       { type: number }
+        ppsScore:         { type: number }
+        creditsEarned:    { type: integer }
+        semesterNumber:   { type: integer }
+        industryReadiness: { type: number }
+        skills:
+          type: array
+          items: { type: string }
+        githubUrl:        { type: ["string", "null"] }
+        portfolioUrl:     { type: ["string", "null"] }
+        skillsMatchPct:   { type: number }
+
+    Company:
+      type: object
+      required: [id, name, email, industry, status, createdAt]
+      properties:
+        id:          { type: integer }
+        name:        { type: string }
+        email:       { type: string }
+        industry:    { type: string }
+        website:     { type: ["string", "null"] }
+        logo:        { type: ["string", "null"] }
+        status:      { type: string }
+        jobsPosted:  { type: integer }
+        hiredCount:  { type: integer }
+        createdAt:   { type: string }
+
+    CompanyInput:
+      type: object
+      required: [name, email, industry]
+      properties:
+        name:     { type: string }
+        email:    { type: string }
+        industry: { type: string }
+        website:  { type: string }
+
+    # ─── DASHBOARDS ──────────────────────────────────────────────────────────
+    StudentDashboard:
+      type: object
+      required: [studentId, semesterNumber, creditsEarned, ppsScore, topicsCompleted, assignmentsPassed, streakDays, industryReadiness, recentActivity]
+      properties:
+        studentId:           { type: integer }
+        semesterNumber:      { type: integer }
+        creditsEarned:       { type: integer }
+        ppsScore:            { type: number }
+        topicsCompleted:     { type: integer }
+        modulesCompleted:    { type: integer }
+        assignmentsPassed:   { type: integer }
+        streakDays:          { type: integer }
+        industryReadiness:   { type: number }
+        nextTopic:           { type: ["string", "null"] }
+        nextDeadline:        { type: ["string", "null"] }
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+        semesterProgress:
+          $ref: "#/components/schemas/SemesterProgress"
+
+    ActivityItem:
+      type: object
+      required: [id, type, title, timestamp]
+      properties:
+        id:        { type: integer }
+        type:      { type: string }
+        title:     { type: string }
+        detail:    { type: ["string", "null"] }
+        score:     { type: ["number", "null"] }
+        timestamp: { type: string }
+
+    PlatformDashboard:
+      type: object
+      required: [totalStudents, totalCompanies, totalJobsPosted, avgPpsScore, totalCertificatesIssued, placementRate, totalCreditsAwarded]
+      properties:
+        totalStudents:          { type: integer }
+        totalCompanies:         { type: integer }
+        totalJobsPosted:        { type: integer }
+        avgPpsScore:            { type: number }
+        totalCertificatesIssued: { type: integer }
+        placementRate:          { type: number }
+        totalCreditsAwarded:    { type: integer }
+        studentsPerSemester:
+          type: array
+          items:
+            $ref: "#/components/schemas/SemesterCount"
+        topUniversities:
+          type: array
+          items:
+            $ref: "#/components/schemas/UniversityCount"
+
+    SemesterCount:
+      type: object
+      required: [semester, count]
+      properties:
+        semester: { type: integer }
+        count:    { type: integer }
+
+    UniversityCount:
+      type: object
+      required: [university, count]
+      properties:
+        university: { type: string }
+        count:      { type: integer }
+
+    HrDashboard:
+      type: object
+      required: [companyId, activeJobs, totalApplicants, totalHired, avgMatchScore, recentCandidates]
+      properties:
+        companyId:        { type: integer }
+        activeJobs:       { type: integer }
+        totalApplicants:  { type: integer }
+        totalHired:       { type: integer }
+        avgMatchScore:    { type: number }
+        recentCandidates:
+          type: array
+          items:
+            $ref: "#/components/schemas/CandidateMatch"

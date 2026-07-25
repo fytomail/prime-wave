@@ -1,6 +1,6 @@
-# [Project name]
+# Prime Wave
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+An AI-powered Software Engineering Learning, Assessment, Certification & Hiring platform that takes students from registration through 7 semesters of structured learning to industry-ready certification and direct hiring.
 
 ## Run & Operate
 
