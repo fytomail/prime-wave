@@ -6,7 +6,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BrainCircuit, FileText, Code2, ArrowLeft, ArrowRight, CheckCircle2, Badge } from 'lucide-react';
+import { BrainCircuit, FileText, Code2, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
 export default function TopicLearning() {

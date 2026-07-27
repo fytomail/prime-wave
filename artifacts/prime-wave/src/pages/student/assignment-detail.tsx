@@ -21,7 +21,7 @@ export default function AssignmentDetail() {
     query: { enabled: !!id, queryKey: ['assignment', Number(id)] }
   });
 
-  const { data: evaluation, isLoading: loadingEval } = useGetAssignmentEvaluation(Number(id), studentId, {
+  const { data: evaluation, isLoading: loadingEval } = useGetAssignmentEvaluation(Number(id), {
     query: { enabled: !!id && assignment?.status === 'passed', queryKey: ['evaluation', Number(id)] }
   });
 
@@ -39,6 +39,7 @@ export default function AssignmentDetail() {
 
   const onSubmit = (data: any) => {
     submitMut.mutate({
+      id: Number(id),
       data: { studentId, ...data }
     });
   };

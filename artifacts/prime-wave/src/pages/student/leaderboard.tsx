@@ -7,7 +7,7 @@ import { Trophy, Medal, Target } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export default function Leaderboard() {
-  const { data: leaderboard, isLoading } = useGetLeaderboard({
+  const { data: leaderboard, isLoading } = useGetLeaderboard(undefined, {
     query: { queryKey: ['leaderboard'] }
   });
 
