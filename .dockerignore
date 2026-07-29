@@ -1,0 +1,8 @@
+node_modules
+.git
+.github
+*.log
+.DS_Store
+artifacts/prime-wave/dist
+lib/api-client-react/dist
+lib/api-zod/dist
