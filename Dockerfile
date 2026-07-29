@@ -10,7 +10,7 @@ RUN npm install -g pnpm@9
 COPY . .
 
 # Install all dependencies (will succeed because all workspace packages are present)
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm install --no-frozen-lockfile --ignore-scripts
 
 # Generate API client from OpenAPI spec
 RUN pnpm --filter @workspace/api-spec codegen || true
