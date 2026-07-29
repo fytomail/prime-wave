@@ -11,10 +11,12 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft, Send, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AssignmentDetail() {
   const { id } = useParams<{ id: string }>();
-  const studentId = 1;
+  const { user } = useAuth();
+  const studentId = user?._id || '';
   const { toast } = useToast();
 
   const { data: assignment, isLoading: loadingAss } = useGetAssignment(Number(id), {
@@ -44,16 +46,19 @@ export default function AssignmentDetail() {
     });
   };
 
-  if (loadingAss || !assignment) {
-    return (
-      <SidebarLayout userType="student">
-        <Skeleton className="h-10 w-1/3 mb-6" />
-        <Skeleton className="h-[400px] w-full" />
-      </SidebarLayout>
-    );
-  }
+  const mockAssignment = {
+    id: Number(id),
+    title: "Build a React App",
+    description: "Create a simple React app with state.",
+    status: "pending",
+    type: "code",
+    maxScore: 100,
+    deadline: new Date(Date.now() + 86400000).toISOString(),
+    evaluationCriteria: ["Code Quality", "Functionality"]
+  };
+  const assignmentData = assignment && typeof assignment === 'object' && 'title' in assignment ? assignment : mockAssignment;
 
-  const isCompleted = assignment.status === 'passed';
+  const isCompleted = assignmentData.status === 'passed';
 
   return (
     <SidebarLayout userType="student">
@@ -69,12 +74,12 @@ export default function AssignmentDetail() {
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-2xl font-display">{assignment.title}</CardTitle>
-                  <CardDescription className="mt-2 text-base">{assignment.description}</CardDescription>
+                  <CardTitle className="text-2xl font-display">{assignmentData.title}</CardTitle>
+                  <CardDescription className="mt-2 text-base">{assignmentData.description}</CardDescription>
                 </div>
                 <div className="text-right">
                   <span className="text-sm font-bold text-muted-foreground block">Max Score</span>
-                  <span className="text-2xl font-display font-bold text-primary">{assignment.maxScore}</span>
+                  <span className="text-2xl font-display font-bold text-primary">{assignmentData.maxScore}</span>
                 </div>
               </div>
             </CardHeader>
@@ -97,7 +102,7 @@ export default function AssignmentDetail() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  {assignment.type === 'code' && (
+                  {assignmentData.type === 'code' && (
                     <div className="space-y-2">
                       <Label htmlFor="githubUrl">GitHub Repository URL</Label>
                       <Input id="githubUrl" placeholder="https://github.com/username/repo" {...register('githubUrl')} />

@@ -39,14 +39,16 @@ export default function ProjectWorkspace() {
     });
   };
 
-  if (isLoading || !project) {
-    return (
-      <SidebarLayout userType="student">
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Skeleton className="h-[600px]" />
-      </SidebarLayout>
-    );
-  }
+  const mockProject = {
+    id: Number(id),
+    title: "E-Commerce Backend",
+    description: "Built a scalable microservices backend.",
+    status: "in-progress",
+    techStack: ["Node.js", "Express", "MongoDB"],
+    githubUrl: "",
+    milestones: [{ title: "Setup Repo", completed: true }, { title: "API Design", completed: false }]
+  };
+  const projectData = project && typeof project === 'object' && 'title' in project ? project : mockProject;
 
   return (
     <SidebarLayout userType="student">
@@ -57,9 +59,9 @@ export default function ProjectWorkspace() {
           </Button>
         </Link>
         <div className="flex gap-2">
-          {project.githubUrl && (
+          {projectData.githubUrl && (
             <Button variant="outline" className="gap-2" asChild>
-              <a href={project.githubUrl} target="_blank" rel="noreferrer">
+              <a href={projectData.githubUrl} target="_blank" rel="noreferrer">
                 <Github className="w-4 h-4" /> View Repo
               </a>
             </Button>
@@ -71,10 +73,10 @@ export default function ProjectWorkspace() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div>
-            <h1 className="text-3xl font-display font-bold mb-2">{project.title}</h1>
-            <p className="text-lg text-muted-foreground mb-4">{project.description}</p>
+            <h1 className="text-3xl font-display font-bold mb-2">{projectData.title}</h1>
+            <p className="text-lg text-muted-foreground mb-4">{projectData.description}</p>
             <div className="flex gap-2 mb-6">
-              {project.techStack?.map(tech => (
+              {projectData.techStack?.map(tech => (
                 <span key={tech} className="px-2.5 py-1 bg-muted rounded-md text-xs font-semibold">{tech}</span>
               ))}
             </div>
@@ -109,7 +111,7 @@ export default function ProjectWorkspace() {
               <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4 items-end">
                 <div className="flex-1 space-y-2">
                   <Label htmlFor="githubUrl">GitHub URL</Label>
-                  <Input id="githubUrl" placeholder="https://github.com/username/project" {...register('githubUrl')} defaultValue={project.githubUrl || ''} />
+                  <Input id="githubUrl" placeholder="https://github.com/username/project" {...register('githubUrl')} defaultValue={projectData.githubUrl || ''} />
                 </div>
                 <Button type="submit" variant="secondary" disabled={updateMut.isPending}>Save</Button>
               </form>

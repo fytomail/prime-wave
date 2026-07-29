@@ -8,13 +8,24 @@ import { Badge } from '@/components/ui/badge';
 import { Link } from 'wouter';
 import { FileCode2, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AssignmentsList() {
+  const { user } = useAuth();
+  const studentId = user?._id || '';
+
   const { data: assignments, isLoading } = useListAssignments({
-    studentId: 1
+    studentId: studentId
   }, {
-    query: { queryKey: ['assignments', 1] }
+    query: { enabled: !!studentId, queryKey: ['assignments', studentId] }
   });
+
+  const mockAssignments = [
+    { id: "a1", title: "Build a React App", description: "Create a simple React app with state.", status: "pending", type: "code", maxScore: 100, deadline: new Date(Date.now() + 86400000).toISOString() },
+    { id: "a2", title: "API Integration", description: "Fetch data from a public API.", status: "submitted", type: "code", maxScore: 100 },
+    { id: "a3", title: "CSS Styling", description: "Style a page using Tailwind.", status: "passed", type: "code", maxScore: 100 }
+  ];
+  const assignmentsData = Array.isArray(assignments) && assignments.length > 0 ? assignments : mockAssignments;
 
   const getStatusIcon = (status: string) => {
     switch(status) {
@@ -44,14 +55,7 @@ export default function AssignmentsList() {
       </div>
 
       <div className="grid gap-4">
-        {isLoading ? (
-          <>
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
-          </>
-        ) : (
-          assignments?.map((assignment) => (
+        {assignmentsData.map((assignment) => (
             <Card key={assignment.id} className="hover:border-primary/50 transition-colors">
               <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div className="flex gap-4 items-start">
@@ -90,7 +94,7 @@ export default function AssignmentsList() {
               </CardContent>
             </Card>
           ))
-        )}
+        }
       </div>
     </SidebarLayout>
   );

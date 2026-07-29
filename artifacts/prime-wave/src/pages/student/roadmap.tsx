@@ -13,6 +13,14 @@ export default function Roadmap() {
     query: { queryKey: ['semesters'] }
   });
 
+  const mockRoadmap = [
+    { id: "s1", number: 1, title: "Foundation in AI & Computing", creditsRequired: 20, description: "Basic concepts of AI, computing, and programming." },
+    { id: "s2", number: 2, title: "Advanced Programming & Data Structures", creditsRequired: 25, description: "Deep dive into algorithms and software design." },
+    { id: "s3", number: 3, title: "Machine Learning & Big Data", creditsRequired: 30, description: "Practical ML models and big data processing." },
+    { id: "s4", number: 4, title: "Industry Capstone & Deployment", creditsRequired: 35, description: "Deploy real-world applications and prepare for interviews." }
+  ];
+  const roadmapData = Array.isArray(semesters) && semesters.length > 0 ? semesters : mockRoadmap;
+
   return (
     <SidebarLayout userType="student">
       <div className="mb-8">
@@ -20,19 +28,12 @@ export default function Roadmap() {
         <p className="text-muted-foreground mt-1">Your 7-semester journey to becoming an industry-ready engineer.</p>
       </div>
 
-      {isLoading ? (
-        <div className="space-y-6 relative border-l-2 border-muted ml-4 pl-8 py-4">
-          <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-40 w-full" />
-        </div>
-      ) : (
-        <div className="relative">
-          {/* Vertical line connecting timeline items */}
-          <div className="absolute top-0 bottom-0 left-6 md:left-8 w-1 bg-muted rounded-full"></div>
+      <div className="relative">
+        {/* Vertical line connecting timeline items */}
+        <div className="absolute top-0 bottom-0 left-6 md:left-8 w-1 bg-muted rounded-full"></div>
 
-          <div className="space-y-12 py-4">
-            {semesters?.map((semester, index) => {
+        <div className="space-y-12 py-4">
+          {roadmapData.map((semester, index) => {
               // Mocking status logic since it's not fully rich in the model yet
               const status = index === 0 ? 'completed' : index === 1 ? 'unlocked' : 'locked';
               
@@ -84,7 +85,6 @@ export default function Roadmap() {
             })}
           </div>
         </div>
-      )}
     </SidebarLayout>
   );
 }

@@ -34,6 +34,106 @@ tags:
     description: Dashboard summary endpoints
 
 paths:
+
+  # ─── AUTH ───────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string }
+                password: { type: string }
+                role: { type: string }
+      responses:
+        "200":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email/password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logout successful
+
+  /auth/refresh-token:
+    post:
+      operationId: refreshToken
+      tags: [auth]
+      summary: Refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+      responses:
+        "200":
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/profile:
+    get:
+      operationId: getProfile
+      tags: [auth]
+      summary: Get user profile
+      responses:
+        "200":
+          description: Profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/verify-token:
+    get:
+      operationId: verifyToken
+      tags: [auth]
+      summary: Verify access token
+      responses:
+        "200":
+          description: Token is valid
+
   /healthz:
     get:
       operationId: healthCheck
@@ -211,11 +311,11 @@ paths:
         - in: path
           name: studentId
           required: true
-          schema: { type: integer }
+          schema: { type: string }
         - in: path
           name: semesterId
           required: true
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
           description: Progress
@@ -234,7 +334,7 @@ paths:
         - in: path
           name: moduleId
           required: true
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
           description: Topics
@@ -296,10 +396,10 @@ paths:
       parameters:
         - in: query
           name: topicId
-          schema: { type: integer }
+          schema: { type: string }
         - in: query
           name: studentId
-          schema: { type: integer }
+          schema: { type: string }
         - in: query
           name: status
           schema: { type: string }
@@ -382,7 +482,7 @@ paths:
       parameters:
         - in: query
           name: studentId
-          schema: { type: integer }
+          schema: { type: string }
         - in: query
           name: type
           schema: { type: string }
@@ -465,7 +565,7 @@ paths:
       parameters:
         - in: query
           name: studentId
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
           description: Certificates
@@ -504,7 +604,7 @@ paths:
         - in: path
           name: studentId
           required: true
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
           description: Portfolio
@@ -548,7 +648,7 @@ paths:
       parameters:
         - in: query
           name: companyId
-          schema: { type: integer }
+          schema: { type: string }
         - in: query
           name: status
           schema: { type: string }
@@ -681,7 +781,7 @@ paths:
         - in: path
           name: studentId
           required: true
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
           description: Dashboard summary
@@ -712,7 +812,7 @@ paths:
         - in: path
           name: companyId
           required: true
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
           description: HR dashboard
@@ -723,6 +823,45 @@ paths:
 
 components:
   schemas:
+
+    User:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        username: { type: string }
+        email: { type: string }
+        role: { type: string }
+        defaultPortal: { type: string }
+        isEmailVerified: { type: boolean }
+
+    Tokens:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+
+    AuthResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+        data:
+          type: object
+          properties:
+            user: { $ref: "#/components/schemas/User" }
+            student: { $ref: "#/components/schemas/Student" }
+            tokens: { $ref: "#/components/schemas/Tokens" }
+
+    ErrorResponse:
+      type: object
+      properties:
+        status: { type: string }
+        error:
+          type: object
+          properties:
+            statusCode: { type: number }
+            message: { type: string }
     HealthStatus:
       type: object
       required: [status]
@@ -735,7 +874,7 @@ components:
       type: object
       required: [id, name, email, role, status, semesterNumber, ppsScore, creditsEarned]
       properties:
-        id:             { type: integer }
+        id: { type: string }
         name:           { type: string }
         email:          { type: string }
         phone:          { type: ["string", "null"] }
@@ -787,7 +926,7 @@ components:
       type: object
       required: [studentId, totalTopicsCompleted, totalAssignmentsPassed, avgScore, streakDays]
       properties:
-        studentId:               { type: integer }
+        studentId: { type: string }
         totalTopicsCompleted:    { type: integer }
         totalModulesCompleted:   { type: integer }
         totalAssignmentsPassed:  { type: integer }
@@ -802,7 +941,7 @@ components:
       type: object
       required: [id, number, title, description, creditsRequired, status]
       properties:
-        id:              { type: integer }
+        id: { type: string }
         number:          { type: integer }
         title:           { type: string }
         description:     { type: string }
@@ -817,8 +956,8 @@ components:
       type: object
       required: [id, semesterId, title, description, order, status]
       properties:
-        id:          { type: integer }
-        semesterId:  { type: integer }
+        id: { type: string }
+        semesterId: { type: string }
         title:       { type: string }
         description: { type: string }
         order:       { type: integer }
@@ -830,8 +969,8 @@ components:
       type: object
       required: [semesterId, studentId, completedModules, totalModules, completedTopics, totalTopics, overallScore, status]
       properties:
-        semesterId:        { type: integer }
-        studentId:         { type: integer }
+        semesterId: { type: string }
+        studentId: { type: string }
         completedModules:  { type: integer }
         totalModules:      { type: integer }
         completedTopics:   { type: integer }
@@ -845,8 +984,8 @@ components:
       type: object
       required: [id, moduleId, title, order, status]
       properties:
-        id:          { type: integer }
-        moduleId:    { type: integer }
+        id: { type: string }
+        moduleId: { type: string }
         title:       { type: string }
         description: { type: ["string", "null"] }
         order:       { type: integer }
@@ -859,7 +998,7 @@ components:
       type: object
       required: [studentId]
       properties:
-        studentId: { type: integer }
+        studentId: { type: string }
         quizScore: { type: number }
         timeSpent: { type: integer }
 
@@ -867,9 +1006,9 @@ components:
       type: object
       required: [id, topicId, studentId, completedAt, quizScore]
       properties:
-        id:          { type: integer }
-        topicId:     { type: integer }
-        studentId:   { type: integer }
+        id: { type: string }
+        topicId: { type: string }
+        studentId: { type: string }
         completedAt: { type: string }
         quizScore:   { type: number }
 
@@ -878,8 +1017,8 @@ components:
       type: object
       required: [id, topicId, title, description, type, status, maxScore]
       properties:
-        id:          { type: integer }
-        topicId:     { type: integer }
+        id: { type: string }
+        topicId: { type: string }
         title:       { type: string }
         description: { type: string }
         type:        { type: string }
@@ -893,7 +1032,7 @@ components:
       type: object
       required: [studentId, content]
       properties:
-        studentId: { type: integer }
+        studentId: { type: string }
         content:   { type: string }
         githubUrl: { type: string }
         notes:     { type: string }
@@ -902,9 +1041,9 @@ components:
       type: object
       required: [id, assignmentId, studentId, status, submittedAt]
       properties:
-        id:           { type: integer }
-        assignmentId: { type: integer }
-        studentId:    { type: integer }
+        id: { type: string }
+        assignmentId: { type: string }
+        studentId: { type: string }
         content:      { type: string }
         githubUrl:    { type: ["string", "null"] }
         status:       { type: string }
@@ -915,8 +1054,8 @@ components:
       type: object
       required: [id, submissionId, overallScore, passed]
       properties:
-        id:             { type: integer }
-        submissionId:   { type: integer }
+        id: { type: string }
+        submissionId: { type: string }
         overallScore:   { type: number }
         passed:         { type: boolean }
         accuracy:       { type: number }
@@ -938,8 +1077,8 @@ components:
       type: object
       required: [id, studentId, title, type, status, createdAt]
       properties:
-        id:          { type: integer }
-        studentId:   { type: integer }
+        id: { type: string }
+        studentId: { type: string }
         moduleId:    { type: ["integer", "null"] }
         semesterId:  { type: ["integer", "null"] }
         title:       { type: string }
@@ -958,9 +1097,9 @@ components:
       type: object
       required: [studentId, title, type]
       properties:
-        studentId:   { type: integer }
-        moduleId:    { type: integer }
-        semesterId:  { type: integer }
+        studentId: { type: string }
+        moduleId: { type: string }
+        semesterId: { type: string }
         title:       { type: string }
         description: { type: string }
         type:        { type: string }
@@ -984,8 +1123,8 @@ components:
       type: object
       required: [id, studentId, type, title, issuedAt, creditsAwarded, verificationCode]
       properties:
-        id:               { type: integer }
-        studentId:        { type: integer }
+        id: { type: string }
+        studentId: { type: string }
         type:             { type: string }
         title:            { type: string }
         semesterNumber:   { type: ["integer", "null"] }
@@ -1000,7 +1139,7 @@ components:
       type: object
       required: [studentId, ppsScore, creditsEarned, industryReadiness, semestersCompleted]
       properties:
-        studentId:           { type: integer }
+        studentId: { type: string }
         studentName:         { type: string }
         university:          { type: string }
         ppsScore:            { type: number }
@@ -1027,7 +1166,7 @@ components:
       required: [rank, studentId, studentName, ppsScore, creditsEarned, semesterNumber, university]
       properties:
         rank:            { type: integer }
-        studentId:       { type: integer }
+        studentId: { type: string }
         studentName:     { type: string }
         avatar:          { type: ["string", "null"] }
         university:      { type: string }
@@ -1044,8 +1183,8 @@ components:
       type: object
       required: [id, companyId, companyName, title, description, status, createdAt]
       properties:
-        id:           { type: integer }
-        companyId:    { type: integer }
+        id: { type: string }
+        companyId: { type: string }
         companyName:  { type: string }
         title:        { type: string }
         description:  { type: string }
@@ -1064,7 +1203,7 @@ components:
       type: object
       required: [companyId, title, description]
       properties:
-        companyId:    { type: integer }
+        companyId: { type: string }
         title:        { type: string }
         description:  { type: string }
         requiredSkills:
@@ -1079,7 +1218,7 @@ components:
       type: object
       required: [studentId, studentName, matchScore, ppsScore, creditsEarned, semesterNumber]
       properties:
-        studentId:        { type: integer }
+        studentId: { type: string }
         studentName:      { type: string }
         avatar:           { type: ["string", "null"] }
         university:       { type: string }
@@ -1099,7 +1238,7 @@ components:
       type: object
       required: [id, name, email, industry, status, createdAt]
       properties:
-        id:          { type: integer }
+        id: { type: string }
         name:        { type: string }
         email:       { type: string }
         industry:    { type: string }
@@ -1124,7 +1263,7 @@ components:
       type: object
       required: [studentId, semesterNumber, creditsEarned, ppsScore, topicsCompleted, assignmentsPassed, streakDays, industryReadiness, recentActivity]
       properties:
-        studentId:           { type: integer }
+        studentId: { type: string }
         semesterNumber:      { type: integer }
         creditsEarned:       { type: integer }
         ppsScore:            { type: number }
@@ -1146,7 +1285,7 @@ components:
       type: object
       required: [id, type, title, timestamp]
       properties:
-        id:        { type: integer }
+        id: { type: string }
         type:      { type: string }
         title:     { type: string }
         detail:    { type: ["string", "null"] }
@@ -1191,7 +1330,7 @@ components:
       type: object
       required: [companyId, activeJobs, totalApplicants, totalHired, avgMatchScore, recentCandidates]
       properties:
-        companyId:        { type: integer }
+        companyId: { type: string }
         activeJobs:       { type: integer }
         totalApplicants:  { type: integer }
         totalHired:       { type: integer }

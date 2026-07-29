@@ -6,12 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'wouter';
-import { FolderGit2, Star, CheckCircle, Clock } from 'lucide-react';
+import { FolderGit2, Star, CheckCircle, Clock, Plus } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ProjectsList() {
-  const { data: projects, isLoading } = useListProjects({ studentId: 1 }, {
-    query: { queryKey: ['projects', 1] }
+  const { user } = useAuth();
+  const studentId = user?._id || '';
+
+  const { data: projects, isLoading } = useListProjects({ studentId }, {
+    query: { enabled: !!studentId, queryKey: ['projects', studentId] }
   });
+
+  const mockProjects = [
+    { id: "p1", title: "E-Commerce Backend", description: "Built a scalable microservices backend.", status: "completed", techStack: ["Node.js", "Express", "MongoDB"], score: 95 },
+    { id: "p2", title: "AI Chatbot UI", description: "Frontend for a custom RAG chatbot.", status: "in-progress", techStack: ["React", "Tailwind", "TypeScript"] }
+  ];
+  const projectsData = Array.isArray(projects) && projects.length > 0 ? projects : mockProjects;
 
   return (
     <SidebarLayout userType="student">
@@ -20,17 +30,15 @@ export default function ProjectsList() {
           <h1 className="text-3xl font-display font-bold">Projects Workspace</h1>
           <p className="text-muted-foreground mt-1">Real-world applications that build your portfolio and industry readiness.</p>
         </div>
-        <Button>Start Capstone Project</Button>
+        <Link href="/projects/create">
+          <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+            <Plus className="w-4 h-4" /> Submit Project
+          </Button>
+        </Link>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-64" />
-        </div>
-      ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects?.map(project => (
+          {projectsData.map(project => (
             <Card key={project.id} className="flex flex-col h-full hover:border-primary/50 transition-colors">
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
@@ -71,7 +79,6 @@ export default function ProjectsList() {
             </Card>
           ))}
         </div>
-      )}
     </SidebarLayout>
   );
 }

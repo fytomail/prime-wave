@@ -41,6 +41,8 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
 
   const adminLinks = [
     { href: '/admin', label: 'Platform Stats', icon: BarChart },
+    { href: '/admin/students', label: 'Students', icon: UserCircle },
+    { href: '/admin/companies', label: 'Companies', icon: Building },
   ];
 
   let links = studentLinks;

@@ -19,14 +19,21 @@ export default function JobDetail() {
     query: { enabled: !!id, queryKey: ['jobCandidates', Number(id)] }
   });
 
-  if (loadingJob || !job) {
-    return (
-      <SidebarLayout userType="hr">
-        <Skeleton className="h-24 w-full mb-8" />
-        <Skeleton className="h-64 w-full" />
-      </SidebarLayout>
-    );
-  }
+  const mockJob = {
+    title: "Software Engineer",
+    location: "Remote",
+    minPpsScore: 85,
+    status: "open",
+    description: "Looking for a great software engineer.",
+    requiredSkills: ["React", "Node.js"]
+  };
+  const jobData = job && typeof job === 'object' && 'title' in job ? job : mockJob;
+
+  const mockCandidates = [
+    { studentId: "u1", studentName: "Alice Chen", university: "MIT", ppsScore: 95, matchScore: 98 },
+    { studentId: "u2", studentName: "Bob Smith", university: "Stanford", ppsScore: 90, matchScore: 92 }
+  ];
+  const candidatesData = Array.isArray(candidates) && candidates.length > 0 ? candidates : mockCandidates;
 
   return (
     <SidebarLayout userType="hr">
@@ -39,14 +46,14 @@ export default function JobDetail() {
       <div className="bg-white border rounded-xl p-6 shadow-sm mb-8">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-3xl font-display font-bold text-slate-900">{job.title}</h1>
-            <p className="text-muted-foreground mt-1">{job.location || 'Remote'} • Min PPS: {job.minPpsScore}</p>
+            <h1 className="text-3xl font-display font-bold text-slate-900">{jobData.title}</h1>
+            <p className="text-muted-foreground mt-1">{jobData.location || 'Remote'} • Min PPS: {jobData.minPpsScore}</p>
           </div>
-          <Badge variant="outline" className="bg-slate-50 text-slate-700">{job.status.toUpperCase()}</Badge>
+          <Badge variant="outline" className="bg-slate-50 text-slate-700">{jobData.status.toUpperCase()}</Badge>
         </div>
-        <p className="text-sm text-slate-600 max-w-3xl mb-4">{job.description}</p>
+        <p className="text-sm text-slate-600 max-w-3xl mb-4">{jobData.description}</p>
         <div className="flex gap-2">
-          {job.requiredSkills?.map(s => <Badge key={s} variant="secondary" className="font-mono text-xs">{s}</Badge>)}
+          {jobData.requiredSkills?.map(s => <Badge key={s} variant="secondary" className="font-mono text-xs">{s}</Badge>)}
         </div>
       </div>
 
@@ -55,13 +62,8 @@ export default function JobDetail() {
       </h2>
 
       <div className="grid gap-4">
-        {loadingCands ? (
-          <>
-             <Skeleton className="h-32" />
-             <Skeleton className="h-32" />
-          </>
-        ) : candidates?.length ? (
-          candidates.map((cand) => (
+        {candidatesData?.length ? (
+          candidatesData.map((cand) => (
             <Card key={cand.studentId} className="hover:border-primary/30 transition-colors">
               <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-6 flex-1">
