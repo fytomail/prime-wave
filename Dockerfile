@@ -6,18 +6,10 @@ WORKDIR /app
 # Install pnpm globally
 RUN npm install -g pnpm@9
 
-# Copy workspace config files
-COPY pnpm-workspace.yaml ./
-COPY package.json ./
-COPY pnpm-lock.yaml ./
+# Copy everything (so workspace lockfile is satisfied)
+COPY . .
 
-# Copy library packages (api-client-react, api-spec, api-zod)
-COPY lib/ ./lib/
-
-# Copy the frontend app
-COPY artifacts/prime-wave/ ./artifacts/prime-wave/
-
-# Install all dependencies
+# Install all dependencies (will succeed because all workspace packages are present)
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Generate API client from OpenAPI spec
