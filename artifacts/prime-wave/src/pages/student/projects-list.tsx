@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useListProjects } from '@workspace/api-client-react';
+import { useGetProjects } from '@workspace/api-client-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,10 @@ export default function ProjectsList() {
   const { user } = useAuth();
   const studentId = user?._id || '';
 
-  const { data: projects, isLoading } = useListProjects({ studentId }, {
-    query: { enabled: !!studentId, queryKey: ['projects', studentId] }
+  const { data: projectsRes, isLoading } = useGetProjects({
+    query: { queryKey: ['projects', studentId] }
   });
+  const projects = (projectsRes as any)?.data || projectsRes;
 
   const mockProjects = [
     { id: "p1", title: "E-Commerce Backend", description: "Built a scalable microservices backend.", status: "completed", techStack: ["Node.js", "Express", "MongoDB"], score: 95 },

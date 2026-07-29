@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useListCertificates } from '@workspace/api-client-react';
+import { useGetCertificatesList } from '@workspace/api-client-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,10 @@ export default function Certificates() {
   const { user } = useAuth();
   const studentId = user?._id || '';
 
-  const { data: certificates, isLoading } = useListCertificates({ studentId }, {
-    query: { enabled: !!studentId, queryKey: ['certificates', studentId] }
+  const { data: certsRes, isLoading } = useGetCertificatesList({
+    query: { queryKey: ['certificates', studentId] }
   });
+  const certificates = (certsRes as any)?.data || certsRes;
 
   const mockCertificates = [
     { id: "c1", title: "Frontend Development", type: "course", issuedAt: new Date(Date.now() - 1000000000).toISOString(), verificationCode: "CERT-ABCD-1234" },

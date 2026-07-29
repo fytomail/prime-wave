@@ -31,11 +31,13 @@ export default function HrDashboard() {
 
   // Loading state removed so fallback data renders instantly while fetching
 
+  const displayName = user?.name || user?.username || 'Company Recruiter';
+
   return (
     <SidebarLayout userType="hr">
       <div className="mb-8 flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-display font-bold text-slate-900">Company Dashboard</h1>
+          <h1 className="text-3xl font-display font-bold text-slate-900">Welcome, {displayName}</h1>
           <p className="text-muted-foreground mt-1">Overview of your hiring pipeline on Prime Wave.</p>
         </div>
         <Link href="/hr/jobs">

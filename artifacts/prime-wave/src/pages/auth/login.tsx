@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Loader2 } from 'lucide-react';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -21,10 +21,10 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
+    if (!identifier || !password) {
       toast({
         title: 'Validation Error',
-        description: 'Please enter both email and password.',
+        description: 'Please enter both username/email and password.',
         variant: 'destructive',
       });
       return;
@@ -33,7 +33,12 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const response = await login({ email, password });
+      const isEmail = identifier.includes('@');
+      const response = await login({
+        email: isEmail ? identifier : undefined,
+        username: !isEmail ? identifier : undefined,
+        password,
+      });
       
       if (response.success && response.data?.tokens?.accessToken && response.data?.user) {
         authLogin(response.data.tokens.accessToken, response.data.user);
@@ -59,7 +64,7 @@ export default function Login() {
     } catch (err: any) {
       toast({
         title: 'Error',
-        description: err.message || 'An error occurred during login',
+        description: err.message || 'Invalid credentials or login failed',
         variant: 'destructive',
       });
     } finally {
@@ -79,13 +84,13 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="identifier">Username or Email</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="student@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="identifier"
+                type="text"
+                placeholder="student or student@example.com"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
             </div>

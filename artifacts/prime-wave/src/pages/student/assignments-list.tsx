@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useListAssignments } from '@workspace/api-client-react';
+import { useGetAssignments } from '@workspace/api-client-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,11 +14,12 @@ export default function AssignmentsList() {
   const { user } = useAuth();
   const studentId = user?._id || '';
 
-  const { data: assignments, isLoading } = useListAssignments({
+  const { data: assignmentsRes, isLoading } = useGetAssignments({
     studentId: studentId
   }, {
     query: { enabled: !!studentId, queryKey: ['assignments', studentId] }
   });
+  const assignments = Array.isArray(assignmentsRes) ? assignmentsRes : assignmentsRes?.data;
 
   const mockAssignments = [
     { id: "a1", title: "Build a React App", description: "Create a simple React app with state.", status: "pending", type: "code", maxScore: 100, deadline: new Date(Date.now() + 86400000).toISOString() },

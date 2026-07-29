@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useCreateJob } from '@workspace/api-client-react';
+import { useCreateCompanyJobAction } from '@workspace/api-client-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,7 @@ export default function CreateJob() {
   const [minPpsScore, setMinPpsScore] = useState(80);
   const [skills, setSkills] = useState('');
 
-  const { mutate: createJob, isPending } = useCreateJob({
+  const { mutate: createJob, isPending } = useCreateCompanyJobAction({
     mutation: {
       onSuccess: () => {
         toast({

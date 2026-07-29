@@ -17,6 +17,7 @@ import ProjectWorkspace from '@/pages/student/project-workspace';
 import Portfolio from '@/pages/student/portfolio';
 import Leaderboard from '@/pages/student/leaderboard';
 import Certificates from '@/pages/student/certificates';
+import StudentFeedback from '@/pages/student/feedback';
 
 import HrLanding from '@/pages/hr/landing';
 import HrDashboard from '@/pages/hr/dashboard';
@@ -24,10 +25,18 @@ import JobsList from '@/pages/hr/jobs-list';
 import JobDetail from '@/pages/hr/job-detail';
 import CreateJob from '@/pages/hr/create-job';
 import CandidateProfile from '@/pages/hr/candidate-profile';
+import CandidatesList from '@/pages/hr/candidates-list';
+import HrInterviews from '@/pages/hr/interviews';
+import HrAnalytics from '@/pages/hr/analytics';
 
 import PlatformAdmin from '@/pages/admin/dashboard';
 import AdminStudents from '@/pages/admin/students';
 import AdminCompanies from '@/pages/admin/companies';
+import AdminUniversities from '@/pages/admin/universities';
+import AdminSemesters from '@/pages/admin/semesters';
+import AdminAssignments from '@/pages/admin/assignments';
+import AdminProjects from '@/pages/admin/projects';
+import AdminAiPrompts from '@/pages/admin/ai-prompts';
 
 const queryClient = new QueryClient();
 
@@ -82,6 +91,9 @@ function Router() {
       <Route path="/certificates">
         <AuthGuard allowedRoles={['student']}><Certificates /></AuthGuard>
       </Route>
+      <Route path="/feedback">
+        <AuthGuard allowedRoles={['student']}><StudentFeedback /></AuthGuard>
+      </Route>
       
       {/* HR Routes */}
       <Route path="/hr" component={HrLanding} />
@@ -97,11 +109,20 @@ function Router() {
       <Route path="/hr/jobs/:id">
         <AuthGuard allowedRoles={['company', 'company_hr']}><JobDetail /></AuthGuard>
       </Route>
+      <Route path="/hr/candidates">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><CandidatesList /></AuthGuard>
+      </Route>
       <Route path="/hr/candidates/:studentId">
         <AuthGuard allowedRoles={['company', 'company_hr']}><CandidateProfile /></AuthGuard>
       </Route>
+      <Route path="/hr/interviews">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><HrInterviews /></AuthGuard>
+      </Route>
+      <Route path="/hr/analytics">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><HrAnalytics /></AuthGuard>
+      </Route>
       
-      {/* Admin Route */}
+      {/* Admin Routes */}
       <Route path="/admin">
         <AuthGuard allowedRoles={['admin']}><PlatformAdmin /></AuthGuard>
       </Route>
@@ -110,6 +131,21 @@ function Router() {
       </Route>
       <Route path="/admin/companies">
         <AuthGuard allowedRoles={['admin']}><AdminCompanies /></AuthGuard>
+      </Route>
+      <Route path="/admin/universities">
+        <AuthGuard allowedRoles={['admin']}><AdminUniversities /></AuthGuard>
+      </Route>
+      <Route path="/admin/semesters">
+        <AuthGuard allowedRoles={['admin']}><AdminSemesters /></AuthGuard>
+      </Route>
+      <Route path="/admin/assignments">
+        <AuthGuard allowedRoles={['admin']}><AdminAssignments /></AuthGuard>
+      </Route>
+      <Route path="/admin/projects">
+        <AuthGuard allowedRoles={['admin']}><AdminProjects /></AuthGuard>
+      </Route>
+      <Route path="/admin/ai-prompts">
+        <AuthGuard allowedRoles={['admin']}><AdminAiPrompts /></AuthGuard>
       </Route>
 
       <Route component={NotFound} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useCreateProject } from '@workspace/api-client-react';
+import { useCreateProjectAction } from '@workspace/api-client-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,7 +22,7 @@ export default function CreateProject() {
   const [techStack, setTechStack] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
 
-  const { mutate: createProject, isPending } = useCreateProject({
+  const { mutate: createProject, isPending } = useCreateProjectAction({
     mutation: {
       onSuccess: () => {
         toast({

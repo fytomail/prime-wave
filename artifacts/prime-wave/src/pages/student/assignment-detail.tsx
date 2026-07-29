@@ -1,7 +1,7 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
 import { useParams, Link } from 'wouter';
-import { useGetAssignment, useGetAssignmentEvaluation, useSubmitAssignment } from '@workspace/api-client-react';
+import { useGetAssignmentById, useGetAssignmentFeedback, useSubmitAssignmentAction } from '@workspace/api-client-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,15 +19,17 @@ export default function AssignmentDetail() {
   const studentId = user?._id || '';
   const { toast } = useToast();
 
-  const { data: assignment, isLoading: loadingAss } = useGetAssignment(Number(id), {
-    query: { enabled: !!id, queryKey: ['assignment', Number(id)] }
+  const { data: assignmentRes, isLoading: loadingAss } = useGetAssignmentById(id || '', {
+    query: { enabled: !!id, queryKey: ['assignment', id] }
   });
+  const assignment: any = (assignmentRes as any)?.data || assignmentRes;
 
-  const { data: evaluation, isLoading: loadingEval } = useGetAssignmentEvaluation(Number(id), {
-    query: { enabled: !!id && assignment?.status === 'passed', queryKey: ['evaluation', Number(id)] }
+  const { data: evalRes, isLoading: loadingEval } = useGetAssignmentFeedback({ submissionId: id }, {
+    query: { enabled: !!id, queryKey: ['evaluation', id] }
   });
+  const evaluation: any = (evalRes as any)?.data || evalRes;
 
-  const submitMut = useSubmitAssignment({
+  const submitMut = useSubmitAssignmentAction({
     mutation: {
       onSuccess: () => {
         toast({ title: 'Submitted successfully', description: 'AI is evaluating your code.' });

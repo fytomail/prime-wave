@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useGetPortfolio } from '@workspace/api-client-react';
+import { useGetPortfolioByStudentId } from '@workspace/api-client-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,10 @@ export default function Portfolio() {
   const { user } = useAuth();
   const studentId = user?._id || '';
   
-  const { data: portfolio, isLoading, isError } = useGetPortfolio(studentId, {
+  const { data: portfolioRes, isLoading, isError } = useGetPortfolioByStudentId(studentId, {
     query: { enabled: !!studentId, queryKey: ['portfolio', studentId], retry: false }
   });
+  const portfolio: any = (portfolioRes as any)?.data || portfolioRes;
 
   const mockPortfolio = {
     studentName: "John Doe",

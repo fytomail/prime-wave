@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useGetPortfolio } from '@workspace/api-client-react';
+import { useGetPortfolioByStudentId } from '@workspace/api-client-react';
 import { useParams, Link } from 'wouter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,9 +13,10 @@ export default function CandidateProfile() {
   const { studentId } = useParams<{ studentId: string }>();
   const { toast } = useToast();
 
-  const { data: portfolio, isLoading } = useGetPortfolio(Number(studentId), {
-    query: { enabled: !!studentId, queryKey: ['portfolio', Number(studentId)] }
+  const { data: portfolioRes, isLoading } = useGetPortfolioByStudentId(studentId || '', {
+    query: { enabled: !!studentId, queryKey: ['portfolio', studentId] }
   });
+  const portfolio: any = (portfolioRes as any)?.data || portfolioRes;
 
   const handleSchedule = () => {
     toast({

@@ -12,9 +12,12 @@ import { Loader2 } from 'lucide-react';
 
 export default function Register() {
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [role, setRole] = useState('student');
+  const [defaultPortal, setDefaultPortal] = useState('Student Portal');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [, setLocation] = useLocation();
@@ -26,17 +29,44 @@ export default function Register() {
     if (!name || !email || !password) {
       toast({
         title: 'Validation Error',
-        description: 'Please fill in all fields.',
+        description: 'Please fill in all required fields.',
         variant: 'destructive',
       });
       return;
     }
 
+    const finalUsername = username || email.split('@')[0];
     setIsSubmitting(true);
 
     try {
-      const response = await register({ name, email, password, role });
-      
+      let portalVal: string | undefined = undefined;
+      if (role === 'student') portalVal = 'Student Portal';
+      else if (role === 'company' || role === 'company_hr') portalVal = 'Company Portal';
+      else if (role === 'admin') portalVal = 'Admin Portal';
+
+      let response = await register({
+        name,
+        username: finalUsername,
+        email,
+        password,
+        role,
+        phone: phone || undefined,
+        defaultPortal: portalVal,
+      });
+
+      // If backend rejected defaultPortal or role enum, retry with cleaned parameters
+      if (!response.success && (response.message?.includes('defaultPortal') || response.message?.includes('validation failed'))) {
+        const fallbackRole = role === 'company_hr' ? 'company' : role;
+        response = await register({
+          name,
+          username: finalUsername,
+          email,
+          password,
+          role: fallbackRole,
+          phone: phone || undefined,
+        });
+      }
+
       if (response.success) {
         toast({
           title: 'Success',
@@ -51,6 +81,25 @@ export default function Register() {
         });
       }
     } catch (err: any) {
+      try {
+        const fallbackRole = role === 'company_hr' ? 'company' : role;
+        const retryRes = await register({
+          name,
+          username: finalUsername,
+          email,
+          password,
+          role: fallbackRole,
+        });
+        if (retryRes.success) {
+          toast({
+            title: 'Success',
+            description: 'Registration successful. Please login.',
+          });
+          setLocation('/login');
+          return;
+        }
+      } catch {}
+
       toast({
         title: 'Error',
         description: err.message || 'An error occurred during registration',
@@ -73,7 +122,7 @@ export default function Register() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">Full Name *</Label>
               <Input
                 id="name"
                 type="text"
@@ -84,7 +133,17 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="johndoe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 type="email"
@@ -95,7 +154,17 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+1 555 0199"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password *</Label>
               <Input
                 id="password"
                 type="password"
@@ -106,7 +175,12 @@ export default function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Role</Label>
-              <Select value={role} onValueChange={setRole}>
+              <Select value={role} onValueChange={(val) => {
+                setRole(val);
+                if (val === 'student') setDefaultPortal('Student Portal');
+                else if (val === 'company_hr' || val === 'company') setDefaultPortal('Company Portal');
+                else setDefaultPortal('Admin Portal');
+              }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>

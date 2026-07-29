@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: roadmap
+    description: Roadmap, semester, module, and topic navigation
+  - name: ai
+    description: AI Learning assistant features
   - name: students
     description: Student management
   - name: semesters
@@ -30,8 +36,14 @@ tags:
     description: Job postings and HR portal
   - name: companies
     description: Company management
+  - name: company
+    description: Company portal operations
+  - name: feedback
+    description: User feedback operations
   - name: dashboard
     description: Dashboard summary endpoints
+  - name: admin
+    description: Platform Admin operations
 
 paths:
 
@@ -48,23 +60,32 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                email: { type: string }
-                password: { type: string }
-                role: { type: string }
+                name: { type: string, example: "John Doe" }
+                username: { type: string, example: "johndoe" }
+                email: { type: string, example: "student@example.com" }
+                password: { type: string, example: "password123" }
+                role: { type: string, example: "student" }
+                phone: { type: string, example: "+1 555 0199" }
+                defaultPortal: { type: string, example: "Student Portal" }
       responses:
-        "200":
-          description: Registration successful
+        "201":
+          description: User registered successfully with access token and refresh token
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /auth/login:
     post:
       operationId: login
       tags: [auth]
-      summary: Login with email/password
+      summary: Login with username/email and password
       requestBody:
         required: true
         content:
@@ -72,15 +93,22 @@ paths:
             schema:
               type: object
               properties:
-                email: { type: string }
-                password: { type: string }
+                username: { type: string, example: "student" }
+                email: { type: string, example: "student@example.com" }
+                password: { type: string, example: "student123" }
       responses:
         "200":
-          description: Login successful
+          description: Login successful - returns user profile, student data, access token, and refresh token
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /auth/logout:
     post:
@@ -89,13 +117,20 @@ paths:
       summary: Logout
       responses:
         "200":
-          description: Logout successful
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
 
   /auth/refresh-token:
     post:
       operationId: refreshToken
       tags: [auth]
-      summary: Refresh token
+      summary: Refresh JWT Access and Refresh tokens
       requestBody:
         required: true
         content:
@@ -106,33 +141,140 @@ paths:
                 refreshToken: { type: string }
       responses:
         "200":
-          description: Token refreshed
+          description: Tokens refreshed successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponse"
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      tokens: { $ref: "#/components/schemas/Tokens" }
+        "401":
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/forgot-password:
+    post:
+      operationId: forgotPassword
+      tags: [auth]
+      summary: Forgot password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+      responses:
+        "200":
+          description: Password reset link sent if account exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /auth/reset-password:
+    post:
+      operationId: resetPassword
+      tags: [auth]
+      summary: Reset password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string }
+                newPassword: { type: string }
+      responses:
+        "200":
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
 
   /auth/profile:
     get:
       operationId: getProfile
       tags: [auth]
-      summary: Get user profile
+      summary: Get logged-in user profile with active tokens
       responses:
         "200":
-          description: Profile retrieved
+          description: Logged-in user profile and updated tokens
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized - invalid or missing access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/change-password:
+    put:
+      operationId: changePassword
+      tags: [auth]
+      summary: Change password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword: { type: string }
+                newPassword: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+        "401":
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /auth/verify-token:
     get:
       operationId: verifyToken
       tags: [auth]
-      summary: Verify access token
+      summary: Verify JWT access token
       responses:
         "200":
-          description: Token is valid
+          description: JWT is valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid or expired access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 
   /healthz:
     get:
@@ -390,9 +532,9 @@ paths:
   # ─── ASSIGNMENTS ────────────────────────────────────────────────────────────
   /assignments:
     get:
-      operationId: listAssignments
+      operationId: getAssignments
       tags: [assignments]
-      summary: List assignments
+      summary: Get all assignments
       parameters:
         - in: query
           name: topicId
@@ -405,239 +547,167 @@ paths:
           schema: { type: string }
       responses:
         "200":
-          description: Assignments
+          description: Assignments list
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Assignment"
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Assignment"
 
-  /assignments/{id}:
-    get:
-      operationId: getAssignment
+  /assignments/submit:
+    post:
+      operationId: submitAssignmentAction
       tags: [assignments]
-      summary: Get assignment details
+      summary: Submit assignment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assignmentId: { type: string }
+                code: { type: string }
+                submissionUrl: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /assignments/submission/{id}:
+    get:
+      operationId: getSubmissionById
+      tags: [assignments]
+      summary: Get submission by ID
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: integer }
+          schema: { type: string }
       responses:
         "200":
-          description: Assignment
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /assignments/evaluate:
+    post:
+      operationId: evaluateAssignment
+      tags: [assignments]
+      summary: Evaluate assignment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                submissionId: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /assignments/feedback:
+    get:
+      operationId: getAssignmentFeedback
+      tags: [assignments]
+      summary: Get assignment feedback
+      parameters:
+        - in: query
+          name: submissionId
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /assignments/score:
+    get:
+      operationId: getAssignmentScore
+      tags: [assignments]
+      summary: Get assignment score
+      parameters:
+        - in: query
+          name: submissionId
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /assignments/history:
+    get:
+      operationId: getAssignmentHistory
+      tags: [assignments]
+      summary: Get assignment history
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /assignments/{id}:
+    get:
+      operationId: getAssignmentById
+      tags: [assignments]
+      summary: Get assignment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Assignment details
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Assignment"
-
-  /assignments/{id}/submit:
-    post:
-      operationId: submitAssignment
-      tags: [assignments]
-      summary: Submit assignment for AI evaluation
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SubmissionInput"
-      responses:
-        "201":
-          description: Submission result
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Submission"
-
-  /assignments/{id}/evaluation:
-    get:
-      operationId: getAssignmentEvaluation
-      tags: [assignments]
-      summary: Get AI evaluation for an assignment submission
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Evaluation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Evaluation"
-
-  # ─── PROJECTS ───────────────────────────────────────────────────────────────
-  /projects:
-    get:
-      operationId: listProjects
-      tags: [projects]
-      summary: List projects
-      parameters:
-        - in: query
-          name: studentId
-          schema: { type: string }
-        - in: query
-          name: type
-          schema: { type: string }
-        - in: query
-          name: status
-          schema: { type: string }
-      responses:
-        "200":
-          description: Projects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Project"
-    post:
-      operationId: createProject
-      tags: [projects]
-      summary: Create a new project
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ProjectInput"
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Project"
-
-  /projects/{id}:
-    get:
-      operationId: getProject
-      tags: [projects]
-      summary: Get project details
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Project
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Project"
-    patch:
-      operationId: updateProject
-      tags: [projects]
-      summary: Update project
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ProjectUpdate"
-      responses:
-        "200":
-          description: Updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Project"
-
-  # ─── CERTIFICATES ───────────────────────────────────────────────────────────
-  /certificates:
-    get:
-      operationId: listCertificates
-      tags: [certificates]
-      summary: List certificates for a student
-      parameters:
-        - in: query
-          name: studentId
-          schema: { type: string }
-      responses:
-        "200":
-          description: Certificates
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Certificate"
-
-  /certificates/{id}:
-    get:
-      operationId: getCertificate
-      tags: [certificates]
-      summary: Get certificate by ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Certificate
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Certificate"
-
-  # ─── PORTFOLIO ──────────────────────────────────────────────────────────────
-  /portfolio/{studentId}:
-    get:
-      operationId: getPortfolio
-      tags: [portfolio]
-      summary: Get student portfolio
-      parameters:
-        - in: path
-          name: studentId
-          required: true
-          schema: { type: string }
-      responses:
-        "200":
-          description: Portfolio
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Portfolio"
-
-  # ─── LEADERBOARD ────────────────────────────────────────────────────────────
-  /leaderboard:
-    get:
-      operationId: getLeaderboard
-      tags: [leaderboard]
-      summary: Get global leaderboard
-      parameters:
-        - in: query
-          name: limit
-          schema: { type: integer }
-        - in: query
-          name: university
-          schema: { type: string }
-        - in: query
-          name: semester
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Leaderboard entries
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/LeaderboardEntry"
 
   # ─── JOBS ───────────────────────────────────────────────────────────────────
   /jobs:
@@ -772,6 +842,121 @@ paths:
                 $ref: "#/components/schemas/Company"
 
   # ─── DASHBOARD ──────────────────────────────────────────────────────────────
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get dashboard overview stats, recent projects, and recent assignments
+      responses:
+        "200":
+          description: Dashboard data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardOverviewResponse"
+        "401":
+          description: Access denied. No token provided or token expired.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard/progress:
+    get:
+      operationId: getDashboardProgress
+      tags: [dashboard]
+      summary: Get progress
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+        "401":
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard/credits:
+    get:
+      operationId: getDashboardCredits
+      tags: [dashboard]
+      summary: Get credits
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+        "401":
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard/recent-projects:
+    get:
+      operationId: getDashboardRecentProjects
+      tags: [dashboard]
+      summary: Get recent projects
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+        "401":
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard/recent-assignments:
+    get:
+      operationId: getDashboardRecentAssignments
+      tags: [dashboard]
+      summary: Get recent assignments
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+        "401":
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /dashboard/student/{studentId}:
     get:
       operationId: getStudentDashboard
@@ -821,8 +1006,2175 @@ paths:
               schema:
                 $ref: "#/components/schemas/HrDashboard"
 
+  # ─── ROADMAP ────────────────────────────────────────────────────────────────
+  /roadmap:
+    get:
+      operationId: getRoadmap
+      tags: [roadmap]
+      summary: Get roadmap
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /roadmap/semesters:
+    get:
+      operationId: getRoadmapSemesters
+      tags: [roadmap]
+      summary: Get semesters
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /roadmap/semester/{id}:
+    get:
+      operationId: getRoadmapSemesterById
+      tags: [roadmap]
+      summary: Get semester by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /roadmap/semester/{id}/modules:
+    get:
+      operationId: getRoadmapSemesterModules
+      tags: [roadmap]
+      summary: Get modules for semester
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /roadmap/module/{id}/topics:
+    get:
+      operationId: getRoadmapModuleTopics
+      tags: [roadmap]
+      summary: Get topics for module
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /roadmap/topic/{id}:
+    get:
+      operationId: getRoadmapTopicById
+      tags: [roadmap]
+      summary: Get topic
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /roadmap/topic/{id}/complete:
+    put:
+      operationId: completeRoadmapTopic
+      tags: [roadmap]
+      summary: Complete topic
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /roadmap/semester/unlock:
+    put:
+      operationId: unlockRoadmapSemester
+      tags: [roadmap]
+      summary: Unlock semester
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                semesterId: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  # ─── AI LEARNING ────────────────────────────────────────────────────────────
+  /ai/summary:
+    post:
+      operationId: aiSummary
+      tags: [ai]
+      summary: AI Summary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topicId: { type: string }
+                content: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /ai/ask:
+    post:
+      operationId: aiAsk
+      tags: [ai]
+      summary: AI Ask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /ai/notes:
+    post:
+      operationId: aiNotes
+      tags: [ai]
+      summary: AI Notes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topicId: { type: string }
+                notes: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /ai/explain-code:
+    post:
+      operationId: aiExplainCode
+      tags: [ai]
+      summary: AI Explain Code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code: { type: string }
+                language: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /ai/examples:
+    post:
+      operationId: aiExamples
+      tags: [ai]
+      summary: AI Examples
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topicId: { type: string }
+                query: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /ai/hints:
+    post:
+      operationId: aiHints
+      tags: [ai]
+      summary: AI Hints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assignmentId: { type: string }
+                problemId: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  # ─── PROJECTS ───────────────────────────────────────────────────────────────
+  /projects:
+    get:
+      operationId: getProjects
+      tags: [projects]
+      summary: Get projects
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /projects/{id}:
+    get:
+      operationId: getProjectById
+      tags: [projects]
+      summary: Get project by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /projects/create:
+    post:
+      operationId: createProjectAction
+      tags: [projects]
+      summary: Create project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string }
+                type: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /projects/upload:
+    post:
+      operationId: uploadProject
+      tags: [projects]
+      summary: Upload project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projectId: { type: string }
+                fileUrl: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /projects/submit:
+    post:
+      operationId: submitProjectAction
+      tags: [projects]
+      summary: Submit project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projectId: { type: string }
+                githubUrl: { type: string }
+                liveUrl: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /projects/evaluate:
+    post:
+      operationId: evaluateProjectAction
+      tags: [projects]
+      summary: Evaluate project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projectId: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /projects/report:
+    get:
+      operationId: getProjectReport
+      tags: [projects]
+      summary: Get project report
+      parameters:
+        - in: query
+          name: projectId
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /projects/history:
+    get:
+      operationId: getProjectHistory
+      tags: [projects]
+      summary: Get project history
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  # ─── LEADERBOARD ────────────────────────────────────────────────────────────
+  /leaderboard:
+    get:
+      operationId: getLeaderboardData
+      tags: [leaderboard]
+      summary: Get leaderboard
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /leaderboard/top10:
+    get:
+      operationId: getLeaderboardTop10
+      tags: [leaderboard]
+      summary: Get top 10
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /leaderboard/rank:
+    get:
+      operationId: getLeaderboardRank
+      tags: [leaderboard]
+      summary: Get rank
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /leaderboard/profile/{id}:
+    get:
+      operationId: getLeaderboardProfileById
+      tags: [leaderboard]
+      summary: Get leaderboard profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  # ─── CERTIFICATES ───────────────────────────────────────────────────────────
+  /certificates:
+    get:
+      operationId: getCertificatesList
+      tags: [certificates]
+      summary: Get certificates
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /certificates/download:
+    get:
+      operationId: downloadCertificateAction
+      tags: [certificates]
+      summary: Download certificate
+      parameters:
+        - in: query
+          name: certificateId
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /certificates/verify:
+    get:
+      operationId: verifyCertificateAction
+      tags: [certificates]
+      summary: Verify certificate
+      parameters:
+        - in: query
+          name: code
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /certificates/generate:
+    post:
+      operationId: generateCertificateAction
+      tags: [certificates]
+      summary: Generate certificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /certificates/{id}:
+    get:
+      operationId: getCertificateById
+      tags: [certificates]
+      summary: Get certificate by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  # ─── PORTFOLIO ──────────────────────────────────────────────────────────────
+  /portfolio:
+    get:
+      operationId: getPortfolioData
+      tags: [portfolio]
+      summary: Get portfolio
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+    put:
+      operationId: updatePortfolioData
+      tags: [portfolio]
+      summary: Update portfolio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio: { type: string }
+                skills:
+                  type: array
+                  items: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /portfolio/github:
+    post:
+      operationId: connectPortfolioGithub
+      tags: [portfolio]
+      summary: Connect GitHub
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                githubUsername: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /portfolio/resume:
+    post:
+      operationId: uploadPortfolioResume
+      tags: [portfolio]
+      summary: Upload resume
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resumeUrl: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /portfolio/public:
+    get:
+      operationId: getPublicPortfolioData
+      tags: [portfolio]
+      summary: Get public portfolio
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /portfolio/{studentId}:
+    get:
+      operationId: getPortfolioByStudentId
+      tags: [portfolio]
+      summary: Get portfolio by student ID
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  # ─── FEEDBACK ───────────────────────────────────────────────────────────────
+  /feedback:
+    post:
+      operationId: submitFeedbackAction
+      tags: [feedback]
+      summary: Submit feedback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string }
+                rating: { type: number }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    get:
+      operationId: getFeedbackList
+      tags: [feedback]
+      summary: Get feedback
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /feedback/{id}:
+    get:
+      operationId: getFeedbackById
+      tags: [feedback]
+      summary: Get feedback by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+    delete:
+      operationId: deleteFeedbackById
+      tags: [feedback]
+      summary: Delete feedback
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  # ─── COMPANY ────────────────────────────────────────────────────────────────
+  /company/login:
+    post:
+      operationId: companyLogin
+      tags: [company]
+      summary: Company login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /company/profile:
+    get:
+      operationId: getCompanyProfileData
+      tags: [company]
+      summary: Company profile
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /company/jobs:
+    get:
+      operationId: getCompanyJobsList
+      tags: [company]
+      summary: Get jobs
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createCompanyJobAction
+      tags: [company]
+      summary: Create job
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string }
+                requirements:
+                  type: array
+                  items: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /company/jobs/{id}:
+    put:
+      operationId: updateCompanyJobAction
+      tags: [company]
+      summary: Update job
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string }
+                status: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteCompanyJobById
+      tags: [company]
+      summary: Delete job
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /company/candidates:
+    get:
+      operationId: getCompanyCandidatesList
+      tags: [company]
+      summary: Get candidates
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /company/candidate/{id}:
+    get:
+      operationId: getCompanyCandidateById
+      tags: [company]
+      summary: Get candidate by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /company/candidate/shortlist:
+    post:
+      operationId: shortlistCompanyCandidate
+      tags: [company]
+      summary: Shortlist candidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                candidateId: { type: string }
+                jobId: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /company/interview/schedule:
+    post:
+      operationId: scheduleCompanyInterview
+      tags: [company]
+      summary: Schedule interview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                candidateId: { type: string }
+                date: { type: string }
+                time: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /company/hiring/decision:
+    post:
+      operationId: submitCompanyHiringDecision
+      tags: [company]
+      summary: Hiring decision
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                candidateId: { type: string }
+                decision: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /company/analytics:
+    get:
+      operationId: getCompanyAnalyticsData
+      tags: [company]
+      summary: Company analytics
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  # ─── ADMIN MANAGEMENT ───────────────────────────────────────────────────────
+  /admin/students:
+    get:
+      operationId: getAdminStudentsList
+      tags: [admin]
+      summary: Get students
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminStudentAction
+      tags: [admin]
+      summary: Create students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/students/{id}:
+    put:
+      operationId: updateAdminStudentAction
+      tags: [admin]
+      summary: Update students
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminStudentById
+      tags: [admin]
+      summary: Delete students
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/companies:
+    get:
+      operationId: getAdminCompaniesList
+      tags: [admin]
+      summary: Get companies
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminCompanyAction
+      tags: [admin]
+      summary: Create companies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/companies/{id}:
+    put:
+      operationId: updateAdminCompanyAction
+      tags: [admin]
+      summary: Update companies
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminCompanyById
+      tags: [admin]
+      summary: Delete companies
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/universities:
+    get:
+      operationId: getAdminUniversitiesList
+      tags: [admin]
+      summary: Get universities
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminUniversityAction
+      tags: [admin]
+      summary: Create universities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/universities/{id}:
+    put:
+      operationId: updateAdminUniversityAction
+      tags: [admin]
+      summary: Update universities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminUniversityById
+      tags: [admin]
+      summary: Delete universities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/semesters:
+    get:
+      operationId: getAdminSemestersList
+      tags: [admin]
+      summary: Get semesters
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminSemesterAction
+      tags: [admin]
+      summary: Create semesters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/semesters/{id}:
+    put:
+      operationId: updateAdminSemesterAction
+      tags: [admin]
+      summary: Update semesters
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminSemesterById
+      tags: [admin]
+      summary: Delete semesters
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/modules:
+    get:
+      operationId: getAdminModulesList
+      tags: [admin]
+      summary: Get modules
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminModuleAction
+      tags: [admin]
+      summary: Create modules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/modules/{id}:
+    put:
+      operationId: updateAdminModuleAction
+      tags: [admin]
+      summary: Update modules
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminModuleById
+      tags: [admin]
+      summary: Delete modules
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/topics:
+    get:
+      operationId: getAdminTopicsList
+      tags: [admin]
+      summary: Get topics
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminTopicAction
+      tags: [admin]
+      summary: Create topics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/topics/{id}:
+    put:
+      operationId: updateAdminTopicAction
+      tags: [admin]
+      summary: Update topics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminTopicById
+      tags: [admin]
+      summary: Delete topics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/assignments:
+    get:
+      operationId: getAdminAssignmentsList
+      tags: [admin]
+      summary: Get assignments
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminAssignmentAction
+      tags: [admin]
+      summary: Create assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/assignments/{id}:
+    put:
+      operationId: updateAdminAssignmentAction
+      tags: [admin]
+      summary: Update assignments
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminAssignmentById
+      tags: [admin]
+      summary: Delete assignments
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/projects:
+    get:
+      operationId: getAdminProjectsList
+      tags: [admin]
+      summary: Get projects
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminProjectAction
+      tags: [admin]
+      summary: Create projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/projects/{id}:
+    put:
+      operationId: updateAdminProjectAction
+      tags: [admin]
+      summary: Update projects
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminProjectById
+      tags: [admin]
+      summary: Delete projects
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/certificates:
+    get:
+      operationId: getAdminCertificatesList
+      tags: [admin]
+      summary: Get certificates
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminCertificateAction
+      tags: [admin]
+      summary: Create certificates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/certificates/{id}:
+    put:
+      operationId: updateAdminCertificateAction
+      tags: [admin]
+      summary: Update certificates
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminCertificateById
+      tags: [admin]
+      summary: Delete certificates
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/leaderboard:
+    get:
+      operationId: getAdminLeaderboardList
+      tags: [admin]
+      summary: Get leaderboard
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminLeaderboardAction
+      tags: [admin]
+      summary: Create leaderboard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/leaderboard/{id}:
+    put:
+      operationId: updateAdminLeaderboardAction
+      tags: [admin]
+      summary: Update leaderboard
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminLeaderboardById
+      tags: [admin]
+      summary: Delete leaderboard
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/ai-prompts:
+    get:
+      operationId: getAdminAiPromptsList
+      tags: [admin]
+      summary: Get ai-prompts
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+    post:
+      operationId: createAdminAiPromptAction
+      tags: [admin]
+      summary: Create ai-prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/ai-prompts/{id}:
+    put:
+      operationId: updateAdminAiPromptAction
+      tags: [admin]
+      summary: Update ai-prompts
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+    delete:
+      operationId: deleteAdminAiPromptById
+      tags: [admin]
+      summary: Delete ai-prompts
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /admin/dashboard-analytics:
+    get:
+      operationId: getAdminDashboardAnalyticsData
+      tags: [admin]
+      summary: Dashboard Analytics
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /admin/feedback-management:
+    get:
+      operationId: getAdminFeedbackManagementList
+      tags: [admin]
+      summary: Feedback Management
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
+  /admin/platform-settings:
+    get:
+      operationId: getAdminPlatformSettingsData
+      tags: [admin]
+      summary: Platform Settings
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data: { type: object }
+
+  /admin/user-management:
+    get:
+      operationId: getAdminUserManagementList
+      tags: [admin]
+      summary: User Management
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items: { type: object }
+
 components:
   schemas:
+
+    DashboardOverviewResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+        data:
+          type: object
+          properties:
+            user: { $ref: "#/components/schemas/User" }
+            student: { $ref: "#/components/schemas/Student" }
+            stats:
+              type: object
+              properties:
+                creditScore: { type: number }
+                currentSemester: { type: number }
+                leaderboardRank: { type: number }
+                completedProjectsCount: { type: number }
+                completedAssignmentsCount: { type: number }
+            recentProjects:
+              type: array
+              items: { type: object }
+            recentAssignments:
+              type: array
+              items: { type: object }
 
     User:
       type: object

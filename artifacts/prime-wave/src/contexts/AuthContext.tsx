@@ -12,8 +12,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Types.User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<Types.User | null>(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isLoading, setIsLoading] = useState(() => !localStorage.getItem('access_token') && !localStorage.getItem('user') ? false : true);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -22,19 +29,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Verify token and fetch profile
+    // Verify token and fetch profile in background
     getProfile()
-      .then((res) => {
+      .then((res: any) => {
         if (res.success && res.data?.user) {
           setUser(res.data.user);
-        } else {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+        } else if (res.data?.user) {
+          setUser(res.data.user);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
         }
       })
-      .catch(() => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+      .catch((err) => {
+        console.warn('Profile fetch failed, using cached user if available:', err);
+        // Only clear if 401 / invalid token explicitly
+        if (err?.status === 401 || err?.statusCode === 401) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+          setUser(null);
+        }
       })
       .finally(() => {
         setIsLoading(false);
@@ -43,12 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (token: string, userData: Types.User) => {
     localStorage.setItem('access_token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
     setUser(null);
   };
 

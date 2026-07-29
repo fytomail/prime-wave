@@ -1,6 +1,6 @@
 import React from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useGetProject, useUpdateProject } from '@workspace/api-client-react';
+import { useGetProjectById, useSubmitProjectAction } from '@workspace/api-client-react';
 import { useParams, Link } from 'wouter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -16,11 +16,12 @@ export default function ProjectWorkspace() {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
 
-  const { data: project, isLoading } = useGetProject(Number(id), {
-    query: { enabled: !!id, queryKey: ['project', Number(id)] }
+  const { data: projectRes, isLoading } = useGetProjectById(id || '', {
+    query: { enabled: !!id, queryKey: ['project', id] }
   });
+  const project: any = (projectRes as any)?.data || projectRes;
 
-  const updateMut = useUpdateProject({
+  const updateMut = useSubmitProjectAction({
     mutation: {
       onSuccess: () => {
         toast({ title: 'Project Updated', description: 'Your repository link has been saved.' });

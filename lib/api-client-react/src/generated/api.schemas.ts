@@ -5,6 +5,18 @@
  * Prime Wave API specification
  * OpenAPI spec version: 0.1.0
  */
+export type DashboardOverviewResponseDataStats = {
+  creditScore?: number;
+  currentSemester?: number;
+  leaderboardRank?: number;
+  completedProjectsCount?: number;
+  completedAssignmentsCount?: number;
+};
+
+export type DashboardOverviewResponseDataRecentProjectsItem = { [key: string]: unknown };
+
+export type DashboardOverviewResponseDataRecentAssignmentsItem = { [key: string]: unknown };
+
 export interface User {
   _id?: string;
   name?: string;
@@ -13,11 +25,6 @@ export interface User {
   role?: string;
   defaultPortal?: string;
   isEmailVerified?: boolean;
-}
-
-export interface Tokens {
-  accessToken?: string;
-  refreshToken?: string;
 }
 
 export interface Student {
@@ -44,6 +51,25 @@ export interface Student {
   creditsEarned: number;
   industryReadiness?: number;
   createdAt?: string;
+}
+
+export type DashboardOverviewResponseData = {
+  user?: User;
+  student?: Student;
+  stats?: DashboardOverviewResponseDataStats;
+  recentProjects?: DashboardOverviewResponseDataRecentProjectsItem[];
+  recentAssignments?: DashboardOverviewResponseDataRecentAssignmentsItem[];
+};
+
+export interface DashboardOverviewResponse {
+  success?: boolean;
+  message?: string;
+  data?: DashboardOverviewResponseData;
+}
+
+export interface Tokens {
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export type AuthResponseData = {
@@ -441,18 +467,66 @@ export interface HrDashboard {
 
 export type RegisterBody = {
   name?: string;
+  username?: string;
   email?: string;
   password?: string;
   role?: string;
+  phone?: string;
+  defaultPortal?: string;
 };
 
 export type LoginBody = {
+  username?: string;
   email?: string;
   password?: string;
+};
+
+export type Logout200 = {
+  success?: boolean;
+  message?: string;
 };
 
 export type RefreshTokenBody = {
   refreshToken?: string;
+};
+
+export type RefreshToken200Data = {
+  tokens?: Tokens;
+};
+
+export type RefreshToken200 = {
+  success?: boolean;
+  message?: string;
+  data?: RefreshToken200Data;
+};
+
+export type ForgotPasswordBody = {
+  email?: string;
+};
+
+export type ForgotPassword200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type ResetPasswordBody = {
+  token?: string;
+  newPassword?: string;
+};
+
+export type ResetPassword200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type ChangePasswordBody = {
+  currentPassword?: string;
+  newPassword?: string;
+};
+
+export type ChangePassword200 = {
+  success?: boolean;
+  message?: string;
 };
 
 export type ListStudentsParams = {
@@ -461,31 +535,909 @@ limit?: number;
 search?: string;
 };
 
-export type ListAssignmentsParams = {
+export type GetAssignmentsParams = {
 topicId?: string;
 studentId?: string;
 status?: string;
 };
 
-export type ListProjectsParams = {
-studentId?: string;
-type?: string;
-status?: string;
+export type GetAssignments200 = {
+  success?: boolean;
+  message?: string;
+  data?: Assignment[];
 };
 
-export type ListCertificatesParams = {
-studentId?: string;
+export type SubmitAssignmentActionBody = {
+  assignmentId?: string;
+  code?: string;
+  submissionUrl?: string;
 };
 
-export type GetLeaderboardParams = {
-limit?: number;
-university?: string;
-semester?: number;
+export type SubmitAssignmentAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetSubmissionById200Data = { [key: string]: unknown };
+
+export type GetSubmissionById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetSubmissionById200Data;
+};
+
+export type EvaluateAssignmentBody = {
+  submissionId?: string;
+};
+
+export type EvaluateAssignment200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAssignmentFeedbackParams = {
+submissionId?: string;
+};
+
+export type GetAssignmentFeedback200Data = { [key: string]: unknown };
+
+export type GetAssignmentFeedback200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAssignmentFeedback200Data;
+};
+
+export type GetAssignmentScoreParams = {
+submissionId?: string;
+};
+
+export type GetAssignmentScore200Data = { [key: string]: unknown };
+
+export type GetAssignmentScore200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAssignmentScore200Data;
+};
+
+export type GetAssignmentHistory200DataItem = { [key: string]: unknown };
+
+export type GetAssignmentHistory200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAssignmentHistory200DataItem[];
 };
 
 export type ListJobsParams = {
 companyId?: string;
 status?: string;
 search?: string;
+};
+
+export type GetDashboardProgress200Data = { [key: string]: unknown };
+
+export type GetDashboardProgress200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetDashboardProgress200Data;
+};
+
+export type GetDashboardCredits200Data = { [key: string]: unknown };
+
+export type GetDashboardCredits200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetDashboardCredits200Data;
+};
+
+export type GetDashboardRecentProjects200DataItem = { [key: string]: unknown };
+
+export type GetDashboardRecentProjects200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetDashboardRecentProjects200DataItem[];
+};
+
+export type GetDashboardRecentAssignments200DataItem = { [key: string]: unknown };
+
+export type GetDashboardRecentAssignments200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetDashboardRecentAssignments200DataItem[];
+};
+
+export type GetRoadmap200Data = { [key: string]: unknown };
+
+export type GetRoadmap200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetRoadmap200Data;
+};
+
+export type GetRoadmapSemesters200DataItem = { [key: string]: unknown };
+
+export type GetRoadmapSemesters200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetRoadmapSemesters200DataItem[];
+};
+
+export type GetRoadmapSemesterById200Data = { [key: string]: unknown };
+
+export type GetRoadmapSemesterById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetRoadmapSemesterById200Data;
+};
+
+export type GetRoadmapSemesterModules200DataItem = { [key: string]: unknown };
+
+export type GetRoadmapSemesterModules200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetRoadmapSemesterModules200DataItem[];
+};
+
+export type GetRoadmapModuleTopics200DataItem = { [key: string]: unknown };
+
+export type GetRoadmapModuleTopics200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetRoadmapModuleTopics200DataItem[];
+};
+
+export type GetRoadmapTopicById200Data = { [key: string]: unknown };
+
+export type GetRoadmapTopicById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetRoadmapTopicById200Data;
+};
+
+export type CompleteRoadmapTopic200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UnlockRoadmapSemesterBody = {
+  semesterId?: string;
+};
+
+export type UnlockRoadmapSemester200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type AiSummaryBody = {
+  topicId?: string;
+  content?: string;
+};
+
+export type AiSummary200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type AiAskBody = {
+  prompt?: string;
+};
+
+export type AiAsk200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type AiNotesBody = {
+  topicId?: string;
+  notes?: string;
+};
+
+export type AiNotes200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type AiExplainCodeBody = {
+  code?: string;
+  language?: string;
+};
+
+export type AiExplainCode200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type AiExamplesBody = {
+  topicId?: string;
+  query?: string;
+};
+
+export type AiExamples200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type AiHintsBody = {
+  assignmentId?: string;
+  problemId?: string;
+};
+
+export type AiHints200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetProjects200DataItem = { [key: string]: unknown };
+
+export type GetProjects200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetProjects200DataItem[];
+};
+
+export type GetProjectById200Data = { [key: string]: unknown };
+
+export type GetProjectById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetProjectById200Data;
+};
+
+export type CreateProjectActionBody = {
+  title?: string;
+  description?: string;
+  type?: string;
+};
+
+export type CreateProjectAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UploadProjectBody = {
+  projectId?: string;
+  fileUrl?: string;
+};
+
+export type UploadProject200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type SubmitProjectActionBody = {
+  projectId?: string;
+  githubUrl?: string;
+  liveUrl?: string;
+};
+
+export type SubmitProjectAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type EvaluateProjectActionBody = {
+  projectId?: string;
+};
+
+export type EvaluateProjectAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetProjectReportParams = {
+projectId?: string;
+};
+
+export type GetProjectReport200Data = { [key: string]: unknown };
+
+export type GetProjectReport200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetProjectReport200Data;
+};
+
+export type GetProjectHistory200DataItem = { [key: string]: unknown };
+
+export type GetProjectHistory200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetProjectHistory200DataItem[];
+};
+
+export type GetLeaderboardData200DataItem = { [key: string]: unknown };
+
+export type GetLeaderboardData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetLeaderboardData200DataItem[];
+};
+
+export type GetLeaderboardTop10200DataItem = { [key: string]: unknown };
+
+export type GetLeaderboardTop10200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetLeaderboardTop10200DataItem[];
+};
+
+export type GetLeaderboardRank200Data = { [key: string]: unknown };
+
+export type GetLeaderboardRank200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetLeaderboardRank200Data;
+};
+
+export type GetLeaderboardProfileById200Data = { [key: string]: unknown };
+
+export type GetLeaderboardProfileById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetLeaderboardProfileById200Data;
+};
+
+export type GetCertificatesList200DataItem = { [key: string]: unknown };
+
+export type GetCertificatesList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCertificatesList200DataItem[];
+};
+
+export type DownloadCertificateActionParams = {
+certificateId?: string;
+};
+
+export type DownloadCertificateAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type VerifyCertificateActionParams = {
+code?: string;
+};
+
+export type VerifyCertificateAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GenerateCertificateActionBody = {
+  courseId?: string;
+};
+
+export type GenerateCertificateAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetCertificateById200Data = { [key: string]: unknown };
+
+export type GetCertificateById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCertificateById200Data;
+};
+
+export type GetPortfolioData200Data = { [key: string]: unknown };
+
+export type GetPortfolioData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetPortfolioData200Data;
+};
+
+export type UpdatePortfolioDataBody = {
+  bio?: string;
+  skills?: string[];
+};
+
+export type UpdatePortfolioData200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type ConnectPortfolioGithubBody = {
+  githubUsername?: string;
+};
+
+export type ConnectPortfolioGithub200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UploadPortfolioResumeBody = {
+  resumeUrl?: string;
+};
+
+export type UploadPortfolioResume200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetPublicPortfolioData200Data = { [key: string]: unknown };
+
+export type GetPublicPortfolioData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetPublicPortfolioData200Data;
+};
+
+export type GetPortfolioByStudentId200Data = { [key: string]: unknown };
+
+export type GetPortfolioByStudentId200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetPortfolioByStudentId200Data;
+};
+
+export type SubmitFeedbackActionBody = {
+  message?: string;
+  rating?: number;
+};
+
+export type SubmitFeedbackAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetFeedbackList200DataItem = { [key: string]: unknown };
+
+export type GetFeedbackList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetFeedbackList200DataItem[];
+};
+
+export type GetFeedbackById200Data = { [key: string]: unknown };
+
+export type GetFeedbackById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetFeedbackById200Data;
+};
+
+export type DeleteFeedbackById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type CompanyLoginBody = {
+  email?: string;
+  password?: string;
+};
+
+export type CompanyLogin200Data = { [key: string]: unknown };
+
+export type CompanyLogin200 = {
+  success?: boolean;
+  message?: string;
+  data?: CompanyLogin200Data;
+};
+
+export type GetCompanyProfileData200Data = { [key: string]: unknown };
+
+export type GetCompanyProfileData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCompanyProfileData200Data;
+};
+
+export type GetCompanyJobsList200DataItem = { [key: string]: unknown };
+
+export type GetCompanyJobsList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCompanyJobsList200DataItem[];
+};
+
+export type CreateCompanyJobActionBody = {
+  title?: string;
+  description?: string;
+  requirements?: string[];
+};
+
+export type CreateCompanyJobAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateCompanyJobActionBody = {
+  title?: string;
+  description?: string;
+  status?: string;
+};
+
+export type UpdateCompanyJobAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteCompanyJobById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetCompanyCandidatesList200DataItem = { [key: string]: unknown };
+
+export type GetCompanyCandidatesList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCompanyCandidatesList200DataItem[];
+};
+
+export type GetCompanyCandidateById200Data = { [key: string]: unknown };
+
+export type GetCompanyCandidateById200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCompanyCandidateById200Data;
+};
+
+export type ShortlistCompanyCandidateBody = {
+  candidateId?: string;
+  jobId?: string;
+};
+
+export type ShortlistCompanyCandidate200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type ScheduleCompanyInterviewBody = {
+  candidateId?: string;
+  date?: string;
+  time?: string;
+};
+
+export type ScheduleCompanyInterview200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type SubmitCompanyHiringDecisionBody = {
+  candidateId?: string;
+  decision?: string;
+};
+
+export type SubmitCompanyHiringDecision200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetCompanyAnalyticsData200Data = { [key: string]: unknown };
+
+export type GetCompanyAnalyticsData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetCompanyAnalyticsData200Data;
+};
+
+export type GetAdminStudentsList200DataItem = { [key: string]: unknown };
+
+export type GetAdminStudentsList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminStudentsList200DataItem[];
+};
+
+export type CreateAdminStudentActionBody = { [key: string]: unknown };
+
+export type CreateAdminStudentAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminStudentActionBody = { [key: string]: unknown };
+
+export type UpdateAdminStudentAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminStudentById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminCompaniesList200DataItem = { [key: string]: unknown };
+
+export type GetAdminCompaniesList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminCompaniesList200DataItem[];
+};
+
+export type CreateAdminCompanyActionBody = { [key: string]: unknown };
+
+export type CreateAdminCompanyAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminCompanyActionBody = { [key: string]: unknown };
+
+export type UpdateAdminCompanyAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminCompanyById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminUniversitiesList200DataItem = { [key: string]: unknown };
+
+export type GetAdminUniversitiesList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminUniversitiesList200DataItem[];
+};
+
+export type CreateAdminUniversityActionBody = { [key: string]: unknown };
+
+export type CreateAdminUniversityAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminUniversityActionBody = { [key: string]: unknown };
+
+export type UpdateAdminUniversityAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminUniversityById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminSemestersList200DataItem = { [key: string]: unknown };
+
+export type GetAdminSemestersList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminSemestersList200DataItem[];
+};
+
+export type CreateAdminSemesterActionBody = { [key: string]: unknown };
+
+export type CreateAdminSemesterAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminSemesterActionBody = { [key: string]: unknown };
+
+export type UpdateAdminSemesterAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminSemesterById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminModulesList200DataItem = { [key: string]: unknown };
+
+export type GetAdminModulesList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminModulesList200DataItem[];
+};
+
+export type CreateAdminModuleActionBody = { [key: string]: unknown };
+
+export type CreateAdminModuleAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminModuleActionBody = { [key: string]: unknown };
+
+export type UpdateAdminModuleAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminModuleById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminTopicsList200DataItem = { [key: string]: unknown };
+
+export type GetAdminTopicsList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminTopicsList200DataItem[];
+};
+
+export type CreateAdminTopicActionBody = { [key: string]: unknown };
+
+export type CreateAdminTopicAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminTopicActionBody = { [key: string]: unknown };
+
+export type UpdateAdminTopicAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminTopicById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminAssignmentsList200DataItem = { [key: string]: unknown };
+
+export type GetAdminAssignmentsList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminAssignmentsList200DataItem[];
+};
+
+export type CreateAdminAssignmentActionBody = { [key: string]: unknown };
+
+export type CreateAdminAssignmentAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminAssignmentActionBody = { [key: string]: unknown };
+
+export type UpdateAdminAssignmentAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminAssignmentById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminProjectsList200DataItem = { [key: string]: unknown };
+
+export type GetAdminProjectsList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminProjectsList200DataItem[];
+};
+
+export type CreateAdminProjectActionBody = { [key: string]: unknown };
+
+export type CreateAdminProjectAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminProjectActionBody = { [key: string]: unknown };
+
+export type UpdateAdminProjectAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminProjectById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminCertificatesList200DataItem = { [key: string]: unknown };
+
+export type GetAdminCertificatesList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminCertificatesList200DataItem[];
+};
+
+export type CreateAdminCertificateActionBody = { [key: string]: unknown };
+
+export type CreateAdminCertificateAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminCertificateActionBody = { [key: string]: unknown };
+
+export type UpdateAdminCertificateAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminCertificateById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminLeaderboardList200DataItem = { [key: string]: unknown };
+
+export type GetAdminLeaderboardList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminLeaderboardList200DataItem[];
+};
+
+export type CreateAdminLeaderboardActionBody = { [key: string]: unknown };
+
+export type CreateAdminLeaderboardAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminLeaderboardActionBody = { [key: string]: unknown };
+
+export type UpdateAdminLeaderboardAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminLeaderboardById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminAiPromptsList200DataItem = { [key: string]: unknown };
+
+export type GetAdminAiPromptsList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminAiPromptsList200DataItem[];
+};
+
+export type CreateAdminAiPromptActionBody = { [key: string]: unknown };
+
+export type CreateAdminAiPromptAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type UpdateAdminAiPromptActionBody = { [key: string]: unknown };
+
+export type UpdateAdminAiPromptAction200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type DeleteAdminAiPromptById200 = {
+  success?: boolean;
+  message?: string;
+};
+
+export type GetAdminDashboardAnalyticsData200Data = { [key: string]: unknown };
+
+export type GetAdminDashboardAnalyticsData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminDashboardAnalyticsData200Data;
+};
+
+export type GetAdminFeedbackManagementList200DataItem = { [key: string]: unknown };
+
+export type GetAdminFeedbackManagementList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminFeedbackManagementList200DataItem[];
+};
+
+export type GetAdminPlatformSettingsData200Data = { [key: string]: unknown };
+
+export type GetAdminPlatformSettingsData200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminPlatformSettingsData200Data;
+};
+
+export type GetAdminUserManagementList200DataItem = { [key: string]: unknown };
+
+export type GetAdminUserManagementList200 = {
+  success?: boolean;
+  message?: string;
+  data?: GetAdminUserManagementList200DataItem[];
 };
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetStudentDashboard } from '@workspace/api-client-react';
+import { useGetDashboard, useGetStudentDashboard } from '@workspace/api-client-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function StudentDashboard() {
   const { user } = useAuth();
   const studentId = user?._id || '';
-  const { data: dashboard, isLoading, isError } = useGetStudentDashboard(studentId, {
+  const { data: overview } = useGetDashboard({
+    query: { queryKey: ['dashboardOverview'], retry: false }
+  });
+  const { data: dashboard } = useGetStudentDashboard(studentId, {
     query: { enabled: !!studentId, queryKey: ['studentDashboard', studentId], retry: false }
   });
 
@@ -41,10 +44,12 @@ export default function StudentDashboard() {
   // Loading state removed so fallback data renders instantly while fetching
 
 
+  const displayName = user?.name || user?.username || 'Student';
+
   return (
     <SidebarLayout userType="student">
       <div className="mb-8">
-        <h1 className="text-3xl font-display font-bold">Welcome back, Student</h1>
+        <h1 className="text-3xl font-display font-bold">Welcome back, {displayName}</h1>
         <p className="text-muted-foreground mt-1">Here's your progress for Semester {dashboardData.semesterNumber}</p>
       </div>
 

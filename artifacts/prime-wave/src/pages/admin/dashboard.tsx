@@ -6,7 +6,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Users, Building, Briefcase, Award, TrendingUp, GraduationCap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 export default function PlatformAdmin() {
+  const { user } = useAuth();
   const { data: dashboard, isLoading } = useGetPlatformDashboard({
     query: { queryKey: ['platformDashboard'] }
   });
@@ -18,22 +21,32 @@ export default function PlatformAdmin() {
     avgPPSScore: 84,
     activeJobs: 342,
     monthlySignups: [
-      { name: 'Jan', students: 4000, companies: 24 },
-      { name: 'Feb', students: 3000, companies: 13 },
-      { name: 'Mar', students: 2000, companies: 98 },
-      { name: 'Apr', students: 2780, companies: 39 },
-      { name: 'May', students: 1890, companies: 48 },
-      { name: 'Jun', students: 2390, companies: 38 },
-      { name: 'Jul', students: 3490, companies: 43 },
+      { semester: 1, count: 4000 },
+      { semester: 2, count: 3200 },
+      { semester: 3, count: 2800 },
+      { semester: 4, count: 2400 },
+      { semester: 5, count: 1900 },
+      { semester: 6, count: 934 }
+    ],
+    topUniversities: [
+      { university: "MIT", count: 3420 },
+      { university: "Stanford", count: 2890 },
+      { university: "CMU", count: 2150 },
+      { university: "UC Berkeley", count: 1980 }
     ]
   };
-  const dashboardData = dashboard && typeof dashboard === 'object' && 'totalStudents' in dashboard ? dashboard : mockDashboard;
+
+  const rawData = (dashboard as any)?.data || dashboard;
+  const dashboardData = rawData && typeof rawData === 'object' && 'totalStudents' in rawData ? rawData : mockDashboard;
+  const topUniversities = Array.isArray(dashboardData?.topUniversities) && dashboardData.topUniversities.length > 0 ? dashboardData.topUniversities : mockDashboard.topUniversities;
+  const monthlySignups = Array.isArray(dashboardData?.monthlySignups) && dashboardData.monthlySignups.length > 0 ? dashboardData.monthlySignups : mockDashboard.monthlySignups;
+  const displayName = user?.name || user?.username || 'Administrator';
 
   return (
     <SidebarLayout userType="admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-display font-bold text-slate-900">Platform Analytics</h1>
-        <p className="text-muted-foreground mt-1">High-level metrics across students, universities, and employers.</p>
+        <h1 className="text-3xl font-display font-bold text-slate-900">Welcome, {displayName}</h1>
+        <p className="text-muted-foreground mt-1">High-level platform metrics across students, universities, and employers.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -94,7 +107,7 @@ export default function PlatformAdmin() {
           <CardContent>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dashboardData.monthlySignups} margin={{ top: 5, right: 5, bottom: 20, left: 0 }}>
+                <BarChart data={monthlySignups} margin={{ top: 5, right: 5, bottom: 20, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                   <XAxis dataKey="semester" tickFormatter={(val) => `Sem ${val}`} axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
@@ -112,20 +125,20 @@ export default function PlatformAdmin() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {dashboard.topUniversities?.map((uni, idx) => (
+              {topUniversities.map((uni: any, idx: number) => (
                 <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-slate-200 flex items-center justify-center text-slate-500">
                       <GraduationCap className="w-4 h-4" />
                     </div>
-                    <span className="font-semibold text-slate-900">{uni.university}</span>
+                    <span className="font-semibold text-slate-900">{uni.university || uni.name || 'University'}</span>
                   </div>
                   <div className="text-sm font-medium text-slate-600">
-                    {uni.count} students
+                    {uni.count || uni.studentCount || 0} students
                   </div>
                 </div>
               ))}
-              {!dashboard.topUniversities?.length && (
+              {!topUniversities.length && (
                 <p className="text-center text-muted-foreground py-8">No university data available.</p>
               )}
             </div>
