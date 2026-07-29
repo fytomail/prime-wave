@@ -7,6 +7,9 @@ out-tsc
 *.tsbuildinfo
 .expo
 .expo-shared
+# Allow prime-wave production build to be committed for deployment
+!artifacts/prime-wave/dist
+!artifacts/prime-wave/dist/**
 
 # dependencies
 node_modules
