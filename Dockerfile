@@ -25,7 +25,7 @@ ENV VITE_API_URL=https://api.meetkishore.in/api/v1
 RUN pnpm --filter @workspace/prime-wave build
 
 # ─── Stage 2: nginx to serve the SPA ─────────────────────────────────────────
-FROM nginx:alpine AS runner
+FROM nginx:alpine AS production
 
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
