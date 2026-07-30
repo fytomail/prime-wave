@@ -25,22 +25,7 @@ export default function CandidateProfile() {
     });
   };
 
-  const portfolioData = portfolio || {
-    studentId: studentId,
-    studentName: "Alice",
-    university: "MIT",
-    githubUrl: "https://github.com/alice",
-    linkedinUrl: "https://linkedin.com/in/alice",
-    ppsScore: 95,
-    industryReadiness: 90,
-    projects: [
-      { id: "p1", title: "E-Commerce", score: 95, description: "Microservices backend.", techStack: ["Node", "Mongo"] }
-    ],
-    skills: ["React", "TypeScript", "Node.js"],
-    certificates: [
-      { id: "c1", type: "course", title: "Frontend", verificationCode: "CERT-ABCD" }
-    ]
-  };
+  const portfolioData = portfolio || null;
 
   return (
     <SidebarLayout userType="hr">

@@ -14,7 +14,7 @@ export default function Roadmap() {
   });
 
   
-  const roadmapData = Array.isArray(semesters) ? semesters : [];
+  const roadmapData = Array.isArray(semesters) ? semesters : (semesters as any)?.data || [];
 
   return (
     <SidebarLayout userType="student">

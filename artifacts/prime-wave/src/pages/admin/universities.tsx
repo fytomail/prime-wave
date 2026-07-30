@@ -11,12 +11,7 @@ export default function AdminUniversities() {
   const { data: res } = useGetAdminUniversitiesList({
     query: { queryKey: ['adminUniversities'], retry: false }
   });
-  const universitiesData = (res as any)?.data || [
-    { _id: 'u1', name: 'MIT', location: 'Cambridge, MA', enrolledStudents: 3420, activeSemesters: 8 },
-    { _id: 'u2', name: 'Stanford University', location: 'Stanford, CA', enrolledStudents: 2890, activeSemesters: 8 },
-    { _id: 'u3', name: 'Carnegie Mellon University', location: 'Pittsburgh, PA', enrolledStudents: 2150, activeSemesters: 8 },
-    { _id: 'u4', name: 'UC Berkeley', location: 'Berkeley, CA', enrolledStudents: 1980, activeSemesters: 8 }
-  ];
+  const universitiesData = (res as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

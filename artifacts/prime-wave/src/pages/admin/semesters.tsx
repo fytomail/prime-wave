@@ -10,12 +10,7 @@ export default function AdminSemesters() {
   const { data: res } = useGetAdminSemestersList({
     query: { queryKey: ['adminSemesters'], retry: false }
   });
-  const semestersData = (res as any)?.data || [
-    { _id: 's1', semesterNumber: 1, title: 'Foundations of Computer Science', modulesCount: 6, status: 'Active' },
-    { _id: 's2', semesterNumber: 2, title: 'Data Structures & Algorithms', modulesCount: 8, status: 'Active' },
-    { _id: 's3', semesterNumber: 3, title: 'Full Stack Web Engineering', modulesCount: 7, status: 'Active' },
-    { _id: 's4', semesterNumber: 4, title: 'AI Systems & Cloud Architecture', modulesCount: 9, status: 'Active' }
-  ];
+  const semestersData = (res as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

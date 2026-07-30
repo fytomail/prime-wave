@@ -61,10 +61,7 @@ export default function StudentFeedback() {
     );
   };
 
-  const feedbackData = (feedbackRes as any)?.data || [
-    { _id: 'f1', category: 'Learning Roadmap', rating: 5, comments: 'The AI tutor hints on the React Hooks module were super helpful!', createdAt: '2 days ago', status: 'Reviewed' },
-    { _id: 'f2', category: 'Project Workspace', rating: 4, comments: 'Great code evaluation feedback on my Express REST API submission.', createdAt: '1 week ago', status: 'Reviewed' }
-  ];
+  const feedbackData = (feedbackRes as any)?.data || [];
 
   return (
     <SidebarLayout userType="student">

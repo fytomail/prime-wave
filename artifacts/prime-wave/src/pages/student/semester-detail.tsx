@@ -30,7 +30,7 @@ export default function SemesterDetail() {
   const semesterData = semester && typeof semester === 'object' ? semester : null;
 
   
-  const modulesData = Array.isArray(modules) ? modules : [];
+  const modulesData = Array.isArray(modules) ? modules : (modules as any)?.data || [];
 
   
   const progressData = progress && typeof progress === 'object' ? progress : null;

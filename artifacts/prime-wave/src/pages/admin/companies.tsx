@@ -14,7 +14,7 @@ export default function AdminCompanies() {
 
   
 
-  const companiesData = Array.isArray(companies) ? companies : [];
+  const companiesData = Array.isArray(companies) ? companies : (companies as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

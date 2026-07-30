@@ -13,7 +13,7 @@ export default function Leaderboard() {
   const leaderboard = (leaderboardRes as any)?.data || leaderboardRes;
 
   
-  const leaderboardData = Array.isArray(leaderboard) ? leaderboard : [];
+  const leaderboardData = Array.isArray(leaderboard) ? leaderboard : (leaderboard as any)?.data || [];
 
   return (
     <SidebarLayout userType="student">

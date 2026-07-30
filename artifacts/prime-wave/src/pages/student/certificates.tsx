@@ -19,7 +19,7 @@ export default function Certificates() {
   const certificates = (certsRes as any)?.data || certsRes;
 
   
-  const certificatesData = Array.isArray(certificates) ? certificates : [];
+  const certificatesData = Array.isArray(certificates) ? certificates : (certificates as any)?.data || [];
 
   return (
     <SidebarLayout userType="student">

@@ -11,11 +11,7 @@ export default function AdminAssignments() {
   const { data: res } = useGetAdminAssignmentsList({
     query: { queryKey: ['adminAssignments'], retry: false }
   });
-  const data = (res as any)?.data || [
-    { _id: 'a1', title: 'Build a REST API with Express', semester: 2, totalSubmissions: 142, status: 'Published' },
-    { _id: 'a2', title: 'React Hooks & State Management', semester: 3, totalSubmissions: 98, status: 'Published' },
-    { _id: 'a3', title: 'Database Indexing & Optimization', semester: 4, totalSubmissions: 64, status: 'Draft' }
-  ];
+  const data = (res as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

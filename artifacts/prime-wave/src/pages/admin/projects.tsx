@@ -11,11 +11,7 @@ export default function AdminProjects() {
   const { data: res } = useGetAdminProjectsList({
     query: { queryKey: ['adminProjects'], retry: false }
   });
-  const data = (res as any)?.data || [
-    { _id: 'p1', title: 'E-Commerce Microservices Backend', category: 'Backend', activeTeams: 45, status: 'Active' },
-    { _id: 'p2', title: 'RAG AI Assistant Dashboard', category: 'AI / LLM', activeTeams: 32, status: 'Active' },
-    { _id: 'p3', title: 'Real-time Chat App', category: 'Full Stack', activeTeams: 28, status: 'Active' }
-  ];
+  const data = (res as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

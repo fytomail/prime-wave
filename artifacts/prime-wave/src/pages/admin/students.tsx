@@ -14,7 +14,7 @@ export default function AdminStudents() {
 
   
 
-  const studentsData = Array.isArray(students) ? students : [];
+  const studentsData = Array.isArray(students) ? students : (students as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

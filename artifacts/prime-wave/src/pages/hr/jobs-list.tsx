@@ -19,7 +19,7 @@ export default function JobsList() {
   });
 
   
-  const jobsData = Array.isArray(jobs) ? jobs : [];
+  const jobsData = Array.isArray(jobs) ? jobs : (jobs as any)?.data || [];
 
   return (
     <SidebarLayout userType="hr">

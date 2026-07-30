@@ -32,7 +32,7 @@ export default function JobDetail() {
   }
 
   
-  const candidatesData = Array.isArray(candidates) ? candidates : [];
+  const candidatesData = Array.isArray(candidates) ? candidates : (candidates as any)?.data || [];
 
   return (
     <SidebarLayout userType="hr">

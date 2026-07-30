@@ -11,11 +11,7 @@ export default function AdminAiPrompts() {
   const { data: res } = useGetAdminAiPromptsList({
     query: { queryKey: ['adminAiPrompts'], retry: false }
   });
-  const data = (res as any)?.data || [
-    { _id: 'prompt1', name: 'Code Reviewer Assistant', model: 'gpt-4o', usageCount: 4520, status: 'Active' },
-    { _id: 'prompt2', name: 'Concept Explainer Agent', model: 'claude-3-5-sonnet', usageCount: 8930, status: 'Active' },
-    { _id: 'prompt3', name: 'Assignment Hint Generator', model: 'gpt-4o-mini', usageCount: 12400, status: 'Active' }
-  ];
+  const data = (res as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

@@ -19,7 +19,7 @@ export default function ProjectsList() {
   const projects = (projectsRes as any)?.data || projectsRes;
 
   
-  const projectsData = Array.isArray(projects) ? projects : [];
+  const projectsData = Array.isArray(projects) ? projects : (projects as any)?.data || [];
 
   return (
     <SidebarLayout userType="student">
