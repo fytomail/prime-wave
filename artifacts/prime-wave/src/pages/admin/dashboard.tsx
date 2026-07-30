@@ -18,6 +18,15 @@ export default function PlatformAdmin() {
 
   const rawData = (dashboard as any)?.data || dashboard;
   const dashboardData = rawData && typeof rawData === 'object' ? rawData : null;
+  if (!dashboardData) {
+    return (
+      <SidebarLayout userType="admin">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
   const topUniversities = Array.isArray(dashboardData?.topUniversities) ? dashboardData.topUniversities : [];
   const monthlySignups = Array.isArray(dashboardData?.monthlySignups) ? dashboardData.monthlySignups : [];
   const displayName = user?.name || user?.username || 'Administrator';

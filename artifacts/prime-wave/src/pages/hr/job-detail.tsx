@@ -21,6 +21,15 @@ export default function JobDetail() {
 
   
   const jobData = job && typeof job === 'object' ? job : null;
+  if (!jobData) {
+    return (
+      <SidebarLayout userType="hr">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
 
   
   const candidatesData = Array.isArray(candidates) ? candidates : [];

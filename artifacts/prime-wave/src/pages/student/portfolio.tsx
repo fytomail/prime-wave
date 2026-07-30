@@ -20,6 +20,15 @@ export default function Portfolio() {
 
   
   const portfolioData = portfolio && typeof portfolio === 'object' ? portfolio : null;
+  if (!portfolioData) {
+    return (
+      <SidebarLayout userType="student">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
 
   // Loading state removed so fallback data renders instantly while fetching
 

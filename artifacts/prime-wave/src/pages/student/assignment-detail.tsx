@@ -50,6 +50,15 @@ export default function AssignmentDetail() {
 
   
   const assignmentData = assignment && typeof assignment === 'object' ? assignment : null;
+  if (!assignmentData) {
+    return (
+      <SidebarLayout userType="student">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
 
   const isCompleted = assignmentData.status === 'passed';
 

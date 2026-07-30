@@ -42,6 +42,15 @@ export default function ProjectWorkspace() {
 
   
   const projectData = project && typeof project === 'object' ? project : null;
+  if (!projectData) {
+    return (
+      <SidebarLayout userType="student">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
 
   return (
     <SidebarLayout userType="student">

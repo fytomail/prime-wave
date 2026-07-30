@@ -34,6 +34,15 @@ export default function SemesterDetail() {
 
   
   const progressData = progress && typeof progress === 'object' ? progress : null;
+  if (!semesterData || !progressData) {
+    return (
+      <SidebarLayout userType="student">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
 
   const progressPercent = progressData 
     ? (progressData.completedModules / progressData.totalModules) * 100 

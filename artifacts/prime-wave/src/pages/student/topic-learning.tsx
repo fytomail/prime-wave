@@ -44,6 +44,15 @@ export default function TopicLearning() {
 
   
   const topicData = topic && typeof topic === 'object' ? topic : null;
+  if (!topicData) {
+    return (
+      <SidebarLayout userType="student">
+        <div className="flex items-center justify-center h-full min-h-[50vh]">
+          <p className="text-muted-foreground">No data available yet.</p>
+        </div>
+      </SidebarLayout>
+    );
+  }
 
   return (
     <SidebarLayout userType="student">
