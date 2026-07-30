@@ -13,13 +13,9 @@ export default function AdminFeedback() {
     query: { queryKey: ['adminFeedbackList'], retry: false }
   });
 
-  const mockFeedback = [
-    { _id: 'f1', studentName: 'Alice Chen', category: 'Platform Usability', rating: 5, comments: 'The new dashboard is very intuitive and easy to use.', createdAt: new Date(Date.now() - 86400000 * 2).toISOString(), status: 'Pending' },
-    { _id: 'f2', studentName: 'Bob Smith', category: 'Project Workspace', rating: 4, comments: 'Great code evaluation feedback on my Express REST API submission, but the editor sometimes lags.', createdAt: new Date(Date.now() - 86400000 * 5).toISOString(), status: 'Reviewed' },
-    { _id: 'f3', studentName: 'Charlie Lee', category: 'Course Content', rating: 3, comments: 'Some of the advanced React topics are missing practical examples.', createdAt: new Date(Date.now() - 86400000 * 10).toISOString(), status: 'Resolved' },
-  ];
+  
 
-  const feedbackData = (feedbackRes as any)?.data || mockFeedback;
+  const feedbackData = (feedbackRes as any)?.data || [];
 
   return (
     <SidebarLayout userType="admin">

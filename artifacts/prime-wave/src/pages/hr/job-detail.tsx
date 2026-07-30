@@ -19,21 +19,11 @@ export default function JobDetail() {
     query: { enabled: !!id, queryKey: ['jobCandidates', Number(id)] }
   });
 
-  const mockJob = {
-    title: "Software Engineer",
-    location: "Remote",
-    minPpsScore: 85,
-    status: "open",
-    description: "Looking for a great software engineer.",
-    requiredSkills: ["React", "Node.js"]
-  };
-  const jobData = job && typeof job === 'object' && 'title' in job ? job : mockJob;
+  
+  const jobData = job && typeof job === 'object' ? job : null;
 
-  const mockCandidates = [
-    { studentId: "u1", studentName: "Alice Chen", university: "MIT", ppsScore: 95, matchScore: 98 },
-    { studentId: "u2", studentName: "Bob Smith", university: "Stanford", ppsScore: 90, matchScore: 92 }
-  ];
-  const candidatesData = Array.isArray(candidates) && candidates.length > 0 ? candidates : mockCandidates;
+  
+  const candidatesData = Array.isArray(candidates) ? candidates : [];
 
   return (
     <SidebarLayout userType="hr">

@@ -48,17 +48,8 @@ export default function AssignmentDetail() {
     });
   };
 
-  const mockAssignment = {
-    id: Number(id),
-    title: "Build a React App",
-    description: "Create a simple React app with state.",
-    status: "pending",
-    type: "code",
-    maxScore: 100,
-    deadline: new Date(Date.now() + 86400000).toISOString(),
-    evaluationCriteria: ["Code Quality", "Functionality"]
-  };
-  const assignmentData = assignment && typeof assignment === 'object' && 'title' in assignment ? assignment : mockAssignment;
+  
+  const assignmentData = assignment && typeof assignment === 'object' ? assignment : null;
 
   const isCompleted = assignmentData.status === 'passed';
 

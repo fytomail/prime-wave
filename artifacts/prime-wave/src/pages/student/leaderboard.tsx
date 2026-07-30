@@ -12,12 +12,8 @@ export default function Leaderboard() {
   });
   const leaderboard = (leaderboardRes as any)?.data || leaderboardRes;
 
-  const mockLeaderboard = [
-    { studentId: "u1", rank: 1, studentName: "Alice Chen", university: "MIT", semesterNumber: 4, ppsScore: 98, industryReadiness: 95 },
-    { studentId: "u2", rank: 2, studentName: "Bob Smith", university: "Stanford", semesterNumber: 4, ppsScore: 94, industryReadiness: 90 },
-    { studentId: "u3", rank: 3, studentName: "Charlie Brown", university: "CMU", semesterNumber: 3, ppsScore: 89, industryReadiness: 85 }
-  ];
-  const leaderboardData = Array.isArray(leaderboard) && leaderboard.length > 0 ? leaderboard : mockLeaderboard;
+  
+  const leaderboardData = Array.isArray(leaderboard) ? leaderboard : [];
 
   return (
     <SidebarLayout userType="student">

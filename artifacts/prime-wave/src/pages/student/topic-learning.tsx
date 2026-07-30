@@ -42,16 +42,8 @@ export default function TopicLearning() {
     });
   };
 
-  const mockTopic = {
-    id: Number(id),
-    moduleId: 1,
-    title: "Introduction to React Hooks",
-    content: "React hooks allow you to use state and other features without writing a class.",
-    estimatedHours: 2,
-    credits: 10,
-    type: "concept"
-  };
-  const topicData = topic && typeof topic === 'object' && 'title' in topic ? topic : mockTopic;
+  
+  const topicData = topic && typeof topic === 'object' ? topic : null;
 
   return (
     <SidebarLayout userType="student">

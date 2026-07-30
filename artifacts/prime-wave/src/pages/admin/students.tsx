@@ -12,15 +12,9 @@ export default function AdminStudents() {
     query: { queryKey: ['adminStudents'], retry: false }
   });
 
-  const mockStudents = [
-    { _id: 'u1', name: 'Alice Chen', email: 'alice@mit.edu', university: 'MIT', creditScore: 140, ppsScore: 95 },
-    { _id: 'u2', name: 'Bob Smith', email: 'bob@stanford.edu', university: 'Stanford', creditScore: 110, ppsScore: 88 },
-    { _id: 'u3', name: 'Charlie Lee', email: 'charlie@berkeley.edu', university: 'UC Berkeley', creditScore: 120, ppsScore: 91 },
-    { _id: 'u4', name: 'Diana Prince', email: 'diana@oxford.edu', university: 'Oxford', creditScore: 180, ppsScore: 99 },
-    { _id: 'u5', name: 'Evan Davis', email: 'evan@cambridge.edu', university: 'Cambridge', creditScore: 90, ppsScore: 82 },
-  ];
+  
 
-  const studentsData = Array.isArray(students) && students.length > 0 ? students : mockStudents;
+  const studentsData = Array.isArray(students) ? students : [];
 
   return (
     <SidebarLayout userType="admin">

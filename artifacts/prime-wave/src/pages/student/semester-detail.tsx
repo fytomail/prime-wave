@@ -26,27 +26,14 @@ export default function SemesterDetail() {
 
   const isLoading = isLoadingSem || isLoadingMod || isLoadingProg;
 
-  const mockSemester = {
-    id: Number(id),
-    number: Number(id),
-    title: "Foundation in AI & Computing",
-    description: "Basic concepts of AI, computing, and programming."
-  };
-  const semesterData = semester && typeof semester === 'object' && 'title' in semester ? semester : mockSemester;
+  
+  const semesterData = semester && typeof semester === 'object' ? semester : null;
 
-  const mockModules = [
-    { id: 1, title: "Introduction to AI", description: "Learn the basics of AI.", status: "completed", estimatedHours: 10, topicsCount: 5 },
-    { id: 2, title: "Data Structures", description: "Learn about arrays, lists, trees.", status: "in-progress", estimatedHours: 15, topicsCount: 8 }
-  ];
-  const modulesData = Array.isArray(modules) && modules.length > 0 ? modules : mockModules;
+  
+  const modulesData = Array.isArray(modules) ? modules : [];
 
-  const mockProgress = {
-    completedModules: 1,
-    totalModules: 2,
-    completedTopics: 5,
-    totalTopics: 13
-  };
-  const progressData = progress && typeof progress === 'object' && 'completedModules' in progress ? progress : mockProgress;
+  
+  const progressData = progress && typeof progress === 'object' ? progress : null;
 
   const progressPercent = progressData 
     ? (progressData.completedModules / progressData.totalModules) * 100 

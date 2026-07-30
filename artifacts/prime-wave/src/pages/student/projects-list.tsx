@@ -18,11 +18,8 @@ export default function ProjectsList() {
   });
   const projects = (projectsRes as any)?.data || projectsRes;
 
-  const mockProjects = [
-    { id: "p1", title: "E-Commerce Backend", description: "Built a scalable microservices backend.", status: "completed", techStack: ["Node.js", "Express", "MongoDB"], score: 95 },
-    { id: "p2", title: "AI Chatbot UI", description: "Frontend for a custom RAG chatbot.", status: "in-progress", techStack: ["React", "Tailwind", "TypeScript"] }
-  ];
-  const projectsData = Array.isArray(projects) && projects.length > 0 ? projects : mockProjects;
+  
+  const projectsData = Array.isArray(projects) ? projects : [];
 
   return (
     <SidebarLayout userType="student">

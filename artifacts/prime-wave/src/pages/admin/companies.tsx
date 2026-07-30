@@ -12,14 +12,9 @@ export default function AdminCompanies() {
     query: { queryKey: ['adminCompanies'], retry: false }
   });
 
-  const mockCompanies = [
-    { _id: 'c1', name: 'Tech Innovators Inc', industry: 'Software', activeJobs: 5, totalHires: 12, location: 'San Francisco, CA' },
-    { _id: 'c2', name: 'Global Finance Corp', industry: 'Finance', activeJobs: 2, totalHires: 4, location: 'New York, NY' },
-    { _id: 'c3', name: 'HealthTech Solutions', industry: 'Healthcare', activeJobs: 8, totalHires: 20, location: 'Boston, MA' },
-    { _id: 'c4', name: 'EcoEnergy Systems', industry: 'Energy', activeJobs: 1, totalHires: 2, location: 'Austin, TX' },
-  ];
+  
 
-  const companiesData = Array.isArray(companies) && companies.length > 0 ? companies : mockCompanies;
+  const companiesData = Array.isArray(companies) ? companies : [];
 
   return (
     <SidebarLayout userType="admin">

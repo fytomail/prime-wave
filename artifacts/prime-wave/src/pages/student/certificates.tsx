@@ -18,11 +18,8 @@ export default function Certificates() {
   });
   const certificates = (certsRes as any)?.data || certsRes;
 
-  const mockCertificates = [
-    { id: "c1", title: "Frontend Development", type: "course", issuedAt: new Date(Date.now() - 1000000000).toISOString(), verificationCode: "CERT-ABCD-1234" },
-    { id: "c2", title: "Backend Development", type: "course", issuedAt: new Date(Date.now() - 500000000).toISOString(), verificationCode: "CERT-XYZ-9876" }
-  ];
-  const certificatesData = Array.isArray(certificates) && certificates.length > 0 ? certificates : mockCertificates;
+  
+  const certificatesData = Array.isArray(certificates) ? certificates : [];
 
   return (
     <SidebarLayout userType="student">

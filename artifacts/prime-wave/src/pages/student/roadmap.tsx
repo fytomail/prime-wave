@@ -13,13 +13,8 @@ export default function Roadmap() {
     query: { queryKey: ['semesters'] }
   });
 
-  const mockRoadmap = [
-    { id: "s1", number: 1, title: "Foundation in AI & Computing", creditsRequired: 20, description: "Basic concepts of AI, computing, and programming." },
-    { id: "s2", number: 2, title: "Advanced Programming & Data Structures", creditsRequired: 25, description: "Deep dive into algorithms and software design." },
-    { id: "s3", number: 3, title: "Machine Learning & Big Data", creditsRequired: 30, description: "Practical ML models and big data processing." },
-    { id: "s4", number: 4, title: "Industry Capstone & Deployment", creditsRequired: 35, description: "Deploy real-world applications and prepare for interviews." }
-  ];
-  const roadmapData = Array.isArray(semesters) && semesters.length > 0 ? semesters : mockRoadmap;
+  
+  const roadmapData = Array.isArray(semesters) ? semesters : [];
 
   return (
     <SidebarLayout userType="student">

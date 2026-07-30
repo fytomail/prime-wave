@@ -10,20 +10,9 @@ export default function HrAnalytics() {
     query: { queryKey: ['hrAnalytics'], retry: false }
   });
 
-  const mockData = {
-    totalApplications: 142,
-    shortlistedCount: 38,
-    interviewsConducted: 24,
-    offersAccepted: 8,
-    monthlyHires: [
-      { month: 'Jan', applicants: 30, hires: 2 },
-      { month: 'Feb', applicants: 45, hires: 3 },
-      { month: 'Mar', applicants: 28, hires: 1 },
-      { month: 'Apr', applicants: 39, hires: 2 }
-    ]
-  };
+  
 
-  const analytics = (res as any)?.data || mockData;
+  const analytics = (res as any)?.data || null;
 
   return (
     <SidebarLayout userType="hr">

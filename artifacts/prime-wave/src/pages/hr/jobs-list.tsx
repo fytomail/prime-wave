@@ -18,11 +18,8 @@ export default function JobsList() {
     query: { enabled: !!companyId, queryKey: ['jobs', companyId], retry: false }
   });
 
-  const mockJobs = [
-    { id: "j1", title: "Frontend Engineer", status: "open", location: "Remote", minPpsScore: 85, requiredSkills: ["React", "TypeScript", "Tailwind"], applicantsCount: 12 },
-    { id: "j2", title: "Backend Engineer", status: "open", location: "New York, NY", minPpsScore: 90, requiredSkills: ["Node.js", "PostgreSQL", "AWS"], applicantsCount: 8 }
-  ];
-  const jobsData = Array.isArray(jobs) && jobs.length > 0 ? jobs : mockJobs;
+  
+  const jobsData = Array.isArray(jobs) ? jobs : [];
 
   return (
     <SidebarLayout userType="hr">

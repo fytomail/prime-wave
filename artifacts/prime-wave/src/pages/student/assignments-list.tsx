@@ -21,12 +21,8 @@ export default function AssignmentsList() {
   });
   const assignments = Array.isArray(assignmentsRes) ? assignmentsRes : assignmentsRes?.data;
 
-  const mockAssignments = [
-    { id: "a1", title: "Build a React App", description: "Create a simple React app with state.", status: "pending", type: "code", maxScore: 100, deadline: new Date(Date.now() + 86400000).toISOString() },
-    { id: "a2", title: "API Integration", description: "Fetch data from a public API.", status: "submitted", type: "code", maxScore: 100 },
-    { id: "a3", title: "CSS Styling", description: "Style a page using Tailwind.", status: "passed", type: "code", maxScore: 100 }
-  ];
-  const assignmentsData = Array.isArray(assignments) && assignments.length > 0 ? assignments : mockAssignments;
+  
+  const assignmentsData = Array.isArray(assignments) ? assignments : [];
 
   const getStatusIcon = (status: string) => {
     switch(status) {

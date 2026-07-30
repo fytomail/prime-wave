@@ -14,32 +14,12 @@ export default function PlatformAdmin() {
     query: { queryKey: ['platformDashboard'] }
   });
 
-  const mockDashboard = {
-    totalStudents: 15234,
-    totalUniversities: 42,
-    totalCompanies: 156,
-    avgPPSScore: 84,
-    activeJobs: 342,
-    monthlySignups: [
-      { semester: 1, count: 4000 },
-      { semester: 2, count: 3200 },
-      { semester: 3, count: 2800 },
-      { semester: 4, count: 2400 },
-      { semester: 5, count: 1900 },
-      { semester: 6, count: 934 }
-    ],
-    topUniversities: [
-      { university: "MIT", count: 3420 },
-      { university: "Stanford", count: 2890 },
-      { university: "CMU", count: 2150 },
-      { university: "UC Berkeley", count: 1980 }
-    ]
-  };
+  
 
   const rawData = (dashboard as any)?.data || dashboard;
-  const dashboardData = rawData && typeof rawData === 'object' && 'totalStudents' in rawData ? rawData : mockDashboard;
-  const topUniversities = Array.isArray(dashboardData?.topUniversities) && dashboardData.topUniversities.length > 0 ? dashboardData.topUniversities : mockDashboard.topUniversities;
-  const monthlySignups = Array.isArray(dashboardData?.monthlySignups) && dashboardData.monthlySignups.length > 0 ? dashboardData.monthlySignups : mockDashboard.monthlySignups;
+  const dashboardData = rawData && typeof rawData === 'object' ? rawData : null;
+  const topUniversities = Array.isArray(dashboardData?.topUniversities) ? dashboardData.topUniversities : [];
+  const monthlySignups = Array.isArray(dashboardData?.monthlySignups) ? dashboardData.monthlySignups : [];
   const displayName = user?.name || user?.username || 'Administrator';
 
   return (

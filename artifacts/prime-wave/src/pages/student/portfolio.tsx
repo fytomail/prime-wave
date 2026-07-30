@@ -18,19 +18,8 @@ export default function Portfolio() {
   });
   const portfolio: any = (portfolioRes as any)?.data || portfolioRes;
 
-  const mockPortfolio = {
-    studentName: "John Doe",
-    bio: "Passionate full-stack developer.",
-    email: "john@example.com",
-    ppsScore: 92,
-    projectsCompleted: 12,
-    certificatesEarned: 3,
-    projects: [
-      { id: "1", title: "E-commerce App", description: "Built with React and Node.js", type: "Full Stack" }
-    ],
-    skills: ["React", "TypeScript", "Node.js"]
-  };
-  const portfolioData = portfolio && typeof portfolio === 'object' && 'studentName' in portfolio ? portfolio : mockPortfolio;
+  
+  const portfolioData = portfolio && typeof portfolio === 'object' ? portfolio : null;
 
   // Loading state removed so fallback data renders instantly while fetching
 

@@ -40,16 +40,8 @@ export default function ProjectWorkspace() {
     });
   };
 
-  const mockProject = {
-    id: Number(id),
-    title: "E-Commerce Backend",
-    description: "Built a scalable microservices backend.",
-    status: "in-progress",
-    techStack: ["Node.js", "Express", "MongoDB"],
-    githubUrl: "",
-    milestones: [{ title: "Setup Repo", completed: true }, { title: "API Design", completed: false }]
-  };
-  const projectData = project && typeof project === 'object' && 'title' in project ? project : mockProject;
+  
+  const projectData = project && typeof project === 'object' ? project : null;
 
   return (
     <SidebarLayout userType="student">

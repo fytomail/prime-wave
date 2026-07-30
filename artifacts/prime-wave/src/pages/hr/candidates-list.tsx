@@ -14,13 +14,9 @@ export default function CandidatesList() {
     query: { queryKey: ['hrCandidates'], retry: false }
   });
 
-  const mockCandidates = [
-    { studentId: 'u1', name: 'Alice Chen', degree: 'Computer Science', university: 'MIT', ppsScore: 95, status: 'Shortlisted' },
-    { studentId: 'u2', name: 'Bob Smith', degree: 'Software Engineering', university: 'Stanford', ppsScore: 90, status: 'Under Review' },
-    { studentId: 'u3', name: 'Charlie Lee', degree: 'Data Science', university: 'UC Berkeley', ppsScore: 91, status: 'Interview Scheduled' },
-  ];
+  
 
-  const candidatesData = (res as any)?.data || mockCandidates;
+  const candidatesData = (res as any)?.data || null;
 
   return (
     <SidebarLayout userType="hr">

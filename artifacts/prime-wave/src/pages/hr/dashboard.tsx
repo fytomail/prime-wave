@@ -17,17 +17,8 @@ export default function HrDashboard() {
     query: { enabled: !!companyId, queryKey: ['hrDashboard', companyId], retry: false }
   });
 
-  const mockDashboard = {
-    activeJobs: 3,
-    totalApplicants: 142,
-    interviewsScheduled: 12,
-    offersExtended: 2,
-    recentApplications: [
-      { id: "1", candidateName: "Jane Doe", jobTitle: "Senior AI Engineer", status: "Reviewing", matchScore: 94 },
-      { id: "2", candidateName: "John Smith", jobTitle: "Frontend Developer", status: "Interviewed", matchScore: 88 }
-    ]
-  };
-  const dashboardData = dashboard && typeof dashboard === 'object' && 'activeJobs' in dashboard ? dashboard : mockDashboard;
+  
+  const dashboardData = dashboard && typeof dashboard === 'object' ? dashboard : null;
 
   // Loading state removed so fallback data renders instantly while fetching
 

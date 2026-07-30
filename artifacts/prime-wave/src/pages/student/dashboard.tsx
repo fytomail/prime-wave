@@ -19,27 +19,8 @@ export default function StudentDashboard() {
     query: { enabled: !!studentId, queryKey: ['studentDashboard', studentId], retry: false }
   });
 
-  const mockDashboard = {
-    ppsScore: 92,
-    creditsEarned: 145,
-    topicsCompleted: 24,
-    streakDays: 7,
-    semesterNumber: 4,
-    semesterProgress: {
-      semesterId: "s4",
-      completedModules: 3,
-      totalModules: 5,
-      completedTopics: 24,
-      totalTopics: 40
-    },
-    nextTopic: "Advanced React Patterns",
-    industryReadiness: 85,
-    recentActivity: [
-      { id: "1", title: "Completed Module: React Hooks", detail: "Scored well in the quiz", score: 95 },
-      { id: "2", title: "Submitted Assignment: Portfolio", detail: "Pending review" }
-    ]
-  };
-  const dashboardData = dashboard && typeof dashboard === 'object' && 'ppsScore' in dashboard ? dashboard : mockDashboard;
+  
+  const dashboardData = dashboard && typeof dashboard === 'object' ? dashboard : null;
 
   // Loading state removed so fallback data renders instantly while fetching
 
