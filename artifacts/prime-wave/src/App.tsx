@@ -37,6 +37,7 @@ import AdminSemesters from '@/pages/admin/semesters';
 import AdminAssignments from '@/pages/admin/assignments';
 import AdminProjects from '@/pages/admin/projects';
 import AdminAiPrompts from '@/pages/admin/ai-prompts';
+import AdminFeedback from '@/pages/admin/feedback';
 
 const queryClient = new QueryClient();
 
@@ -146,6 +147,9 @@ function Router() {
       </Route>
       <Route path="/admin/ai-prompts">
         <AuthGuard allowedRoles={['admin']}><AdminAiPrompts /></AuthGuard>
+      </Route>
+      <Route path="/admin/feedback">
+        <AuthGuard allowedRoles={['admin']}><AdminFeedback /></AuthGuard>
       </Route>
 
       <Route component={NotFound} />

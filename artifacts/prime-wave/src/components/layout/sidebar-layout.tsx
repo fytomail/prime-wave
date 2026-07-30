@@ -77,6 +77,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     { href: '/certificates', label: 'Certificates', icon: Award },
     { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
     { href: '/admin/ai-prompts', label: 'AI Prompts', icon: BrainCircuit },
+    { href: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
   ];
 
   let links = studentLinks;
