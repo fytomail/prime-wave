@@ -11,12 +11,12 @@ import { Link } from 'wouter';
 
 export default function CandidatesList() {
   const { data: res } = useGetCompanyCandidatesList({
-    query: { queryKey: ['hrCandidates'], retry: false }
+    query: { queryKey: ['hrCandidates'], retry: false, staleTime: 5 * 60 * 1000 }
   });
 
   
 
-  const candidatesData = (res as any)?.data || null;
+  const candidatesData = (res as any)?.data || [];
 
   return (
     <SidebarLayout userType="hr">

@@ -17,7 +17,7 @@ export default function AssignmentsList() {
   const { data: assignmentsRes, isLoading } = useGetAssignments({
     studentId: studentId
   }, {
-    query: { enabled: !!studentId, queryKey: ['assignments', studentId] }
+    query: { enabled: !!studentId, queryKey: ['assignments', studentId], staleTime: 5 * 60 * 1000 }
   });
   const assignments = Array.isArray(assignmentsRes) ? assignmentsRes : assignmentsRes?.data;
 
@@ -69,7 +69,7 @@ export default function AssignmentsList() {
                     </p>
                     <div className="flex items-center gap-4 mt-3 text-xs font-medium text-muted-foreground">
                       <span className="flex items-center gap-1.5 px-2 py-1 bg-secondary rounded">
-                        <FileCode2 className="w-3 h-3" /> {assignment.type.toUpperCase()}
+                        <FileCode2 className="w-3 h-3" /> {(assignment.type || 'code').toUpperCase()}
                       </span>
                       {assignment.deadline && (
                         <span className="flex items-center gap-1.5 text-red-500">
