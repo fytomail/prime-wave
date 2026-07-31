@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 
 import NotFound from '@/pages/not-found';
 import Landing from '@/pages/landing';
@@ -45,6 +46,14 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import Login from '@/pages/auth/login';
 import Register from '@/pages/auth/register';
+
+function RedirectToLogin() {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation('/login');
+  }, [setLocation]);
+  return null;
+}
 
 function Router() {
   return (
@@ -152,7 +161,9 @@ function Router() {
         <AuthGuard allowedRoles={['admin']}><AdminFeedback /></AuthGuard>
       </Route>
 
-      <Route component={NotFound} />
+      <Route>
+        <RedirectToLogin />
+      </Route>
     </Switch>
   );
 }
