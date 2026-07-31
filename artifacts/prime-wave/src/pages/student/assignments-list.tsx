@@ -19,9 +19,7 @@ export default function AssignmentsList() {
   }, {
     query: { enabled: !!studentId, queryKey: ['assignments', studentId], staleTime: 5 * 60 * 1000 }
   });
-  const assignments = Array.isArray(assignmentsRes) ? assignmentsRes : assignmentsRes?.data;
-
-  
+  const assignments = Array.isArray(assignmentsRes) ? assignmentsRes : (assignmentsRes as any)?.data;
   const assignmentsData = Array.isArray(assignments) ? assignments : [];
 
   const getStatusIcon = (status: string) => {
@@ -69,14 +67,17 @@ export default function AssignmentsList() {
                     </p>
                     <div className="flex items-center gap-4 mt-3 text-xs font-medium text-muted-foreground">
                       <span className="flex items-center gap-1.5 px-2 py-1 bg-secondary rounded">
-                        <FileCode2 className="w-3 h-3" /> {(assignment.type || 'code').toUpperCase()}
+                        <FileCode2 className="w-3 h-3" /> {((assignment as any).type || 'code').toUpperCase()}
                       </span>
-                      {assignment.deadline && (
+                      {(assignment as any).deadline ? (
                         <span className="flex items-center gap-1.5 text-red-500">
-                          <Clock className="w-3 h-3" /> Due {format(new Date(assignment.deadline), 'MMM d')}
+                          <Clock className="w-3 h-3" /> Due {(() => {
+                            try { return format(new Date((assignment as any).deadline), 'MMM d') }
+                            catch (e) { return 'Invalid Date' }
+                          })()}
                         </span>
-                      )}
-                      <span>Max Score: {assignment.maxScore}</span>
+                      ) : null}
+                      <span>Max Score: {(assignment as any).maxScore || 100}</span>
                     </div>
                   </div>
                 </div>

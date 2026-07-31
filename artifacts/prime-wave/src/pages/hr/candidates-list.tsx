@@ -16,7 +16,8 @@ export default function CandidatesList() {
 
   
 
-  const candidatesData = (res as any)?.data || [];
+  const candidatesDataArray = (res as any)?.data;
+  const candidatesData = Array.isArray(candidatesDataArray) ? candidatesDataArray : [];
 
   return (
     <SidebarLayout userType="hr">
@@ -44,33 +45,42 @@ export default function CandidatesList() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {candidatesData.map((candidate: any, idx: number) => (
-                <TableRow key={candidate.studentId || idx}>
+              {candidatesData.map((candidate: any, idx: number) => {
+                const name = candidate?.student?.name || candidate?.name || 'Candidate';
+                const university = candidate?.student?.university || candidate?.university || 'University';
+                const degree = candidate?.student?.degree || candidate?.degree || 'Degree';
+                const ppsScore = candidate?.ppsScore || candidate?.student?.ppsScore || 90;
+                const status = candidate?.status || 'Applied';
+                const studentId = candidate?.student?._id || candidate?.studentId || 'u1';
+                
+                return (
+                <TableRow key={studentId || idx}>
                   <TableCell className="font-semibold flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center">
-                      {(candidate.name || 'C').charAt(0)}
+                      {name.charAt(0)}
                     </div>
-                    {candidate.name || 'Candidate'}
+                    {name}
                   </TableCell>
                   <TableCell>
-                    <div>{candidate.university || 'University'}</div>
-                    <div className="text-xs text-muted-foreground">{candidate.degree || 'Degree'}</div>
+                    <div>{university}</div>
+                    <div className="text-xs text-muted-foreground">{degree}</div>
                   </TableCell>
-                  <TableCell className="font-mono font-bold text-primary">{candidate.ppsScore || 90} PPS</TableCell>
+                  <TableCell className="font-mono font-bold text-primary">{ppsScore} PPS</TableCell>
                   <TableCell>
                     <Badge variant="outline" className="border-blue-500 text-blue-600 bg-blue-50">
-                      {candidate.status || 'Applied'}
+                      {status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Link href={`/hr/candidates/${candidate.studentId || 'u1'}`}>
+                    <Link href={`/hr/candidates/${studentId}`}>
                       <Button size="sm" variant="outline" className="gap-1">
                         View Profile <ExternalLink className="w-3.5 h-3.5" />
                       </Button>
                     </Link>
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>
