@@ -47,18 +47,25 @@ export default function Certificates() {
                 </div>
 
                 <div className="space-y-1 mb-8">
-                  <p className="text-sm font-semibold text-primary uppercase tracking-wider">{cert.type} Certification</p>
-                  <h3 className="text-2xl font-display font-bold text-foreground leading-tight">{cert.title}</h3>
+                  <p className="text-sm font-semibold text-primary uppercase tracking-wider">{(cert as any).type || 'Professional'} Certification</p>
+                  <h3 className="text-2xl font-display font-bold text-foreground leading-tight">{(cert as any).title}</h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 border-t pt-6">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase mb-1">Issue Date</p>
-                    <p className="font-medium text-sm">{format(new Date(cert.issuedAt), 'MMMM d, yyyy')}</p>
+                    <p className="font-medium text-sm">{(() => {
+                      try {
+                        const dateString = (cert as any).issuedAt || (cert as any).issueDate;
+                        return dateString ? format(new Date(dateString), 'MMMM d, yyyy') : 'N/A';
+                      } catch {
+                        return 'Invalid Date';
+                      }
+                    })()}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase mb-1">Verification ID</p>
-                    <p className="font-mono text-sm text-slate-500">{cert.verificationCode}</p>
+                    <p className="font-mono text-sm text-slate-500">{(cert as any).verificationCode || (cert as any).certificateId || 'N/A'}</p>
                   </div>
                 </div>
 

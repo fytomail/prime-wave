@@ -12,7 +12,13 @@ export default function HrAnalytics() {
 
   
 
-  const analytics = (res as any)?.data || null;
+  const analytics = (res as any)?.data || {
+    totalApplications: 0,
+    shortlistedCount: 0,
+    interviewsConducted: 0,
+    offersAccepted: 0,
+    monthlyHires: []
+  };
 
   return (
     <SidebarLayout userType="hr">
@@ -55,7 +61,7 @@ export default function HrAnalytics() {
         <CardContent>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.monthlyHires} margin={{ top: 5, right: 5, bottom: 20, left: 0 }}>
+              <BarChart data={analytics.monthlyHires || []} margin={{ top: 5, right: 5, bottom: 20, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="month" axisLine={false} tickLine={false} />
                 <YAxis axisLine={false} tickLine={false} />
