@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 
 import NotFound from '@/pages/not-found';
 import Landing from '@/pages/landing';
@@ -17,6 +18,7 @@ import ProjectWorkspace from '@/pages/student/project-workspace';
 import Portfolio from '@/pages/student/portfolio';
 import Leaderboard from '@/pages/student/leaderboard';
 import Certificates from '@/pages/student/certificates';
+import StudentFeedback from '@/pages/student/feedback';
 
 import HrLanding from '@/pages/hr/landing';
 import HrDashboard from '@/pages/hr/dashboard';
@@ -24,26 +26,45 @@ import JobsList from '@/pages/hr/jobs-list';
 import JobDetail from '@/pages/hr/job-detail';
 import CreateJob from '@/pages/hr/create-job';
 import CandidateProfile from '@/pages/hr/candidate-profile';
+import CandidatesList from '@/pages/hr/candidates-list';
+import HrInterviews from '@/pages/hr/interviews';
+import HrAnalytics from '@/pages/hr/analytics';
 
 import PlatformAdmin from '@/pages/admin/dashboard';
 import AdminStudents from '@/pages/admin/students';
 import AdminCompanies from '@/pages/admin/companies';
+import AdminUniversities from '@/pages/admin/universities';
+import AdminSemesters from '@/pages/admin/semesters';
+import AdminAssignments from '@/pages/admin/assignments';
+import AdminProjects from '@/pages/admin/projects';
+import AdminAiPrompts from '@/pages/admin/ai-prompts';
+import AdminFeedback from '@/pages/admin/feedback';
 
 const queryClient = new QueryClient();
 
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AuthGuard } from '@/components/auth/AuthGuard';
-import Login from '@/pages/auth/login';
-import Register from '@/pages/auth/register';
+import AuthPage from '@/pages/auth/AuthPage';
+
+function RedirectToLogin() {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation('/login');
+  }, [setLocation]);
+  return null;
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
       
-      {/* Auth Routes */}
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
+      <Route path="/login">
+        <AuthPage initialMode="login" />
+      </Route>
+      <Route path="/register">
+        <AuthPage initialMode="signup" />
+      </Route>
       
       {/* Student Routes */}
       <Route path="/dashboard">
@@ -82,6 +103,9 @@ function Router() {
       <Route path="/certificates">
         <AuthGuard allowedRoles={['student']}><Certificates /></AuthGuard>
       </Route>
+      <Route path="/feedback">
+        <AuthGuard allowedRoles={['student']}><StudentFeedback /></AuthGuard>
+      </Route>
       
       {/* HR Routes */}
       <Route path="/hr" component={HrLanding} />
@@ -97,11 +121,20 @@ function Router() {
       <Route path="/hr/jobs/:id">
         <AuthGuard allowedRoles={['company', 'company_hr']}><JobDetail /></AuthGuard>
       </Route>
+      <Route path="/hr/candidates">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><CandidatesList /></AuthGuard>
+      </Route>
       <Route path="/hr/candidates/:studentId">
         <AuthGuard allowedRoles={['company', 'company_hr']}><CandidateProfile /></AuthGuard>
       </Route>
+      <Route path="/hr/interviews">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><HrInterviews /></AuthGuard>
+      </Route>
+      <Route path="/hr/analytics">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><HrAnalytics /></AuthGuard>
+      </Route>
       
-      {/* Admin Route */}
+      {/* Admin Routes */}
       <Route path="/admin">
         <AuthGuard allowedRoles={['admin']}><PlatformAdmin /></AuthGuard>
       </Route>
@@ -110,6 +143,24 @@ function Router() {
       </Route>
       <Route path="/admin/companies">
         <AuthGuard allowedRoles={['admin']}><AdminCompanies /></AuthGuard>
+      </Route>
+      <Route path="/admin/universities">
+        <AuthGuard allowedRoles={['admin']}><AdminUniversities /></AuthGuard>
+      </Route>
+      <Route path="/admin/semesters">
+        <AuthGuard allowedRoles={['admin']}><AdminSemesters /></AuthGuard>
+      </Route>
+      <Route path="/admin/assignments">
+        <AuthGuard allowedRoles={['admin']}><AdminAssignments /></AuthGuard>
+      </Route>
+      <Route path="/admin/projects">
+        <AuthGuard allowedRoles={['admin']}><AdminProjects /></AuthGuard>
+      </Route>
+      <Route path="/admin/ai-prompts">
+        <AuthGuard allowedRoles={['admin']}><AdminAiPrompts /></AuthGuard>
+      </Route>
+      <Route path="/admin/feedback">
+        <AuthGuard allowedRoles={['admin']}><AdminFeedback /></AuthGuard>
       </Route>
 
       <Route component={NotFound} />
