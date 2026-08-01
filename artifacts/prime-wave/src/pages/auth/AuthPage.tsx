@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Chrome, Github, Eye, EyeOff, Check } from 'lucide-react';
+import { Chrome, Github, Eye, EyeOff, Check, ChevronDown } from 'lucide-react';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { login, register } from '@workspace/api-client-react';
@@ -21,6 +21,7 @@ export default function AuthPage({ initialMode = 'signup' }: { initialMode?: 'si
     lastName: '',
     email: '',
     password: '',
+    role: 'student',
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -42,8 +43,8 @@ export default function AuthPage({ initialMode = 'signup' }: { initialMode?: 'si
           name,
           email: formData.email,
           password: formData.password,
-          role: 'student',
-          defaultPortal: 'Student Portal'
+          role: formData.role,
+          defaultPortal: formData.role === 'company' ? 'Company Portal' : 'Student Portal'
         });
         toast({ title: 'Success', description: 'Account created successfully!' });
         authLogin(res.data?.tokens?.accessToken || '', res.data?.user);
@@ -220,22 +221,34 @@ export default function AuthPage({ initialMode = 'signup' }: { initialMode?: 'si
           {/* Registration / Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <InputGroup
-                  label="First Name"
-                  placeholder="John"
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(val) => handleInputChange('firstName', val)}
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <InputGroup
+                    label="First Name"
+                    placeholder="John"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(val) => handleInputChange('firstName', val)}
+                  />
+                  <InputGroup
+                    label="Last Name"
+                    placeholder="Doe"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(val) => handleInputChange('lastName', val)}
+                  />
+                </div>
+
+                <SelectGroup
+                  label="Role"
+                  value={formData.role}
+                  onChange={(val) => handleInputChange('role', val)}
+                  options={[
+                    { label: 'Student', value: 'student' },
+                    { label: 'Company', value: 'company' },
+                  ]}
                 />
-                <InputGroup
-                  label="Last Name"
-                  placeholder="Doe"
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(val) => handleInputChange('lastName', val)}
-                />
-              </div>
+              </>
             )}
 
             <InputGroup
@@ -416,7 +429,41 @@ function InputGroup({
 }
 
 /**
- * 4. PRIMEWAVE Logo SVG Component (Matching the uploaded double-mountain logo)
+ * 4. SelectGroup Component
+ */
+interface SelectGroupProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: { label: string; value: string }[];
+}
+
+function SelectGroup({ label, value, onChange, options }: SelectGroupProps) {
+  return (
+    <div className="space-y-1.5 w-full text-left">
+      <label className="text-sm font-medium text-white block">{label}</label>
+      <div className="relative flex items-center">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="bg-brand-gray border-none rounded-xl h-11 px-4 text-white focus:ring-2 focus:ring-white/20 w-full outline-none transition-all text-sm appearance-none cursor-pointer"
+        >
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value} className="bg-black text-white">
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <div className="absolute right-3.5 flex items-center pointer-events-none">
+          <ChevronDown className="w-4 h-4 text-white/40" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 5. PRIMEWAVE Logo SVG Component (Matching the uploaded double-mountain logo)
  */
 function PrimeWaveLogo({ className = 'w-6 h-6' }: { className?: string }) {
   return (
