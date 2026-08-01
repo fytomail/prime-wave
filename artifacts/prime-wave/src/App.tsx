@@ -1,397 +1,135 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Chrome, Github, Eye, EyeOff, Check } from 'lucide-react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Route, Switch, Router as WouterRouter } from 'wouter';
 
-export default function App() {
-  const [mode, setMode] = useState<'signup' | 'login'>('signup');
-  const [showPassword, setShowPassword] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  });
+import NotFound from '@/pages/not-found';
+import Landing from '@/pages/landing';
+import StudentDashboard from '@/pages/student/dashboard';
+import Roadmap from '@/pages/student/roadmap';
+import SemesterDetail from '@/pages/student/semester-detail';
+import TopicLearning from '@/pages/student/topic-learning';
+import AssignmentsList from '@/pages/student/assignments-list';
+import AssignmentDetail from '@/pages/student/assignment-detail';
+import ProjectsList from '@/pages/student/projects-list';
+import CreateProject from '@/pages/student/create-project';
+import ProjectWorkspace from '@/pages/student/project-workspace';
+import Portfolio from '@/pages/student/portfolio';
+import Leaderboard from '@/pages/student/leaderboard';
+import Certificates from '@/pages/student/certificates';
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+import HrLanding from '@/pages/hr/landing';
+import HrDashboard from '@/pages/hr/dashboard';
+import JobsList from '@/pages/hr/jobs-list';
+import JobDetail from '@/pages/hr/job-detail';
+import CreateJob from '@/pages/hr/create-job';
+import CandidateProfile from '@/pages/hr/candidate-profile';
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(
-      mode === 'signup'
-        ? `Account Created for ${formData.firstName || 'User'} (${formData.email})`
-        : `Logged in as ${formData.email}`
-    );
-  };
+import PlatformAdmin from '@/pages/admin/dashboard';
+import AdminStudents from '@/pages/admin/students';
+import AdminCompanies from '@/pages/admin/companies';
 
-  // Animation variants for Left Hero Column
-  const heroContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
+const queryClient = new QueryClient();
 
-  const heroChildVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
+import { AuthProvider } from '@/contexts/AuthContext';
+import { AuthGuard } from '@/components/auth/AuthGuard';
+import Login from '@/pages/auth/login';
+import Register from '@/pages/auth/register';
 
+function Router() {
   return (
-    <main className="flex min-h-screen w-full bg-black selection:bg-white/30 p-2 transition-all duration-500 lg:h-screen lg:overflow-hidden lg:p-4">
-      {/* ------------------------------------------------------------- */}
-      {/* LEFT COLUMN: Hero & Pure Background Video (Hidden on mobile)  */}
-      {/* ------------------------------------------------------------- */}
-      <section className="relative hidden lg:flex w-[52%] flex-col items-center justify-end pb-32 px-12 rounded-3xl overflow-hidden shadow-2xl h-full">
-        {/* Background Video - Pure playback with NO dark overlay */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260506_081238_406ed0e3-5d83-436e-a512-0bbff7ec5b95.mp4"
-            type="video/mp4"
-          />
-        </video>
+    <Switch>
+      <Route path="/" component={Landing} />
+      
+      {/* Auth Routes */}
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      
+      {/* Student Routes */}
+      <Route path="/dashboard">
+        <AuthGuard allowedRoles={['student']}><StudentDashboard /></AuthGuard>
+      </Route>
+      <Route path="/roadmap">
+        <AuthGuard allowedRoles={['student']}><Roadmap /></AuthGuard>
+      </Route>
+      <Route path="/semester/:id">
+        <AuthGuard allowedRoles={['student']}><SemesterDetail /></AuthGuard>
+      </Route>
+      <Route path="/topic/:id">
+        <AuthGuard allowedRoles={['student']}><TopicLearning /></AuthGuard>
+      </Route>
+      <Route path="/assignments">
+        <AuthGuard allowedRoles={['student']}><AssignmentsList /></AuthGuard>
+      </Route>
+      <Route path="/assignments/:id">
+        <AuthGuard allowedRoles={['student']}><AssignmentDetail /></AuthGuard>
+      </Route>
+      <Route path="/projects">
+        <AuthGuard allowedRoles={['student']}><ProjectsList /></AuthGuard>
+      </Route>
+      <Route path="/projects/create">
+        <AuthGuard allowedRoles={['student']}><CreateProject /></AuthGuard>
+      </Route>
+      <Route path="/projects/:id">
+        <AuthGuard allowedRoles={['student']}><ProjectWorkspace /></AuthGuard>
+      </Route>
+      <Route path="/portfolio">
+        <AuthGuard allowedRoles={['student']}><Portfolio /></AuthGuard>
+      </Route>
+      <Route path="/leaderboard">
+        <AuthGuard allowedRoles={['student']}><Leaderboard /></AuthGuard>
+      </Route>
+      <Route path="/certificates">
+        <AuthGuard allowedRoles={['student']}><Certificates /></AuthGuard>
+      </Route>
+      
+      {/* HR Routes */}
+      <Route path="/hr" component={HrLanding} />
+      <Route path="/hr/dashboard">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><HrDashboard /></AuthGuard>
+      </Route>
+      <Route path="/hr/jobs">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><JobsList /></AuthGuard>
+      </Route>
+      <Route path="/hr/jobs/create">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><CreateJob /></AuthGuard>
+      </Route>
+      <Route path="/hr/jobs/:id">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><JobDetail /></AuthGuard>
+      </Route>
+      <Route path="/hr/candidates/:studentId">
+        <AuthGuard allowedRoles={['company', 'company_hr']}><CandidateProfile /></AuthGuard>
+      </Route>
+      
+      {/* Admin Route */}
+      <Route path="/admin">
+        <AuthGuard allowedRoles={['admin']}><PlatformAdmin /></AuthGuard>
+      </Route>
+      <Route path="/admin/students">
+        <AuthGuard allowedRoles={['admin']}><AdminStudents /></AuthGuard>
+      </Route>
+      <Route path="/admin/companies">
+        <AuthGuard allowedRoles={['admin']}><AdminCompanies /></AuthGuard>
+      </Route>
 
-        {/* Hero Content Container */}
-        <motion.div
-          variants={heroContainerVariants}
-          initial="hidden"
-          animate="visible"
-          className="z-10 w-full max-w-xs space-y-8"
-        >
-          {/* Brand/Logo Header */}
-          <motion.div
-            variants={heroChildVariants}
-            className="flex items-center gap-3"
-          >
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1.5 shadow-lg">
-              <PrimeWaveLogo className="w-full h-full text-white" />
-            </div>
-            <span className="text-xl font-semibold tracking-tight text-white drop-shadow-md">
-              PRIMEWAVE
-            </span>
-          </motion.div>
-
-          {/* Heading Block */}
-          <motion.div variants={heroChildVariants} className="space-y-2 text-center">
-            <h1 className="text-4xl font-medium tracking-tight whitespace-nowrap text-white drop-shadow-lg">
-              {mode === 'signup' ? 'Join PRIMEWAVE' : 'Welcome to PRIMEWAVE'}
-            </h1>
-            <p className="text-white/80 text-sm leading-relaxed px-4 drop-shadow">
-              Follow these 3 quick phases to activate your space.
-            </p>
-          </motion.div>
-
-          {/* Staggered Phase Steps */}
-          <motion.div variants={heroChildVariants} className="space-y-3">
-            <StepItem
-              number={1}
-              text="Register your identity"
-              active={activeStep === 1}
-              onClick={() => setActiveStep(1)}
-            />
-            <StepItem
-              number={2}
-              text="Configure your studio"
-              active={activeStep === 2}
-              onClick={() => setActiveStep(2)}
-            />
-            <StepItem
-              number={3}
-              text="Finalize your profile"
-              active={activeStep === 3}
-              onClick={() => setActiveStep(3)}
-            />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ------------------------------------------------------------- */}
-      {/* RIGHT COLUMN: Interactive Form                                */}
-      {/* ------------------------------------------------------------- */}
-      <section className="flex-1 flex flex-col items-center justify-center py-12 lg:py-6 px-4 sm:px-12 lg:px-16 xl:px-24 overflow-y-auto lg:overflow-hidden relative">
-        {/* Top-Left Brand Logo for Mobile View */}
-        <div className="lg:hidden absolute top-6 left-6 flex items-center gap-2.5">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 border border-white/20 p-1">
-            <PrimeWaveLogo className="w-full h-full text-white" />
-          </div>
-          <span className="text-lg font-semibold tracking-tight text-white">
-            PRIMEWAVE
-          </span>
-        </div>
-
-        <motion.div
-          key={mode}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="w-full max-w-xl space-y-8 lg:space-y-6 sm:space-y-10 my-auto"
-        >
-          {/* Header */}
-          <div className="space-y-1.5 text-left">
-            <h2 className="text-3xl font-medium tracking-tight text-white">
-              {mode === 'signup' ? 'Create New Profile' : 'Welcome Back'}
-            </h2>
-            <p className="text-white/40 text-sm">
-              {mode === 'signup'
-                ? 'Input your basic details to begin the journey.'
-                : 'Enter your credentials to access your workspace.'}
-            </p>
-          </div>
-
-          {/* Social Sign In Buttons */}
-          <div className="grid grid-cols-2 gap-4">
-            <SocialButton icon={<Chrome className="w-4 h-4 text-white" />} label="Google" />
-            <SocialButton icon={<Github className="w-4 h-4 text-white" />} label="Github" />
-          </div>
-
-          {/* Divider */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
-            </div>
-            <span className="relative bg-black px-4 text-xs font-medium text-white/40 uppercase tracking-widest">
-              Or
-            </span>
-          </div>
-
-          {/* Registration / Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'signup' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <InputGroup
-                  label="First Name"
-                  placeholder="John"
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(val) => handleInputChange('firstName', val)}
-                />
-                <InputGroup
-                  label="Last Name"
-                  placeholder="Doe"
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(val) => handleInputChange('lastName', val)}
-                />
-              </div>
-            )}
-
-            <InputGroup
-              label="Email"
-              placeholder="john.doe@example.com"
-              type="email"
-              value={formData.email}
-              onChange={(val) => handleInputChange('email', val)}
-            />
-
-            <InputGroup
-              label="Password"
-              placeholder="••••••••••••"
-              type={showPassword ? 'text' : 'password'}
-              value={formData.password}
-              onChange={(val) => handleInputChange('password', val)}
-              rightElement={
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-white/40 hover:text-white transition-colors focus:outline-none"
-                  aria-label="Toggle Password Visibility"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              }
-              helperText={
-                mode === 'signup' ? 'Requires at least 8 symbols.' : undefined
-              }
-            />
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full h-14 bg-white text-black font-semibold rounded-xl hover:bg-white/90 active:scale-[0.98] mt-4 transition-all duration-200 cursor-pointer shadow-lg shadow-white/5"
-            >
-              {mode === 'signup' ? 'Create Account' : 'Sign In'}
-            </button>
-          </form>
-
-          {/* Footer Toggle Link */}
-          <div className="text-center pt-2">
-            {mode === 'signup' ? (
-              <p className="text-sm text-white/50">
-                Member of the team?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('login')}
-                  className="text-white font-medium hover:underline cursor-pointer transition-colors"
-                >
-                  Log in
-                </button>
-              </p>
-            ) : (
-              <p className="text-sm text-white/50">
-                New to PRIMEWAVE?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('signup')}
-                  className="text-white font-medium hover:underline cursor-pointer transition-colors"
-                >
-                  Sign up
-                </button>
-              </p>
-            )}
-          </div>
-        </motion.div>
-      </section>
-    </main>
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
-{/* ==================================================================== */}
-{/* REUSABLE FUNCTIONAL COMPONENTS                                       */}
-{/* ==================================================================== */}
-
-/**
- * 1. StepItem Component
- */
-interface StepItemProps {
-  number: number;
-  text: string;
-  active?: boolean;
-  onClick?: () => void;
-}
-
-function StepItem({ number, text, active = false, onClick }: StepItemProps) {
+function App() {
   return (
-    <div
-      onClick={onClick}
-      className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-300 cursor-pointer select-none ${
-        active
-          ? 'bg-white text-black border border-white shadow-xl scale-[1.02]'
-          : 'bg-brand-gray text-white border-none hover:bg-white/10'
-      }`}
-    >
-      <div
-        className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold shrink-0 transition-colors ${
-          active ? 'bg-black text-white' : 'bg-white/10 text-white/40'
-        }`}
-      >
-        {active ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : number}
-      </div>
-      <span className="text-sm font-medium tracking-tight truncate">{text}</span>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
-/**
- * 2. SocialButton Component
- */
-interface SocialButtonProps {
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-}
-
-function SocialButton({ icon, label, onClick }: SocialButtonProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="bg-black border border-white/10 rounded-xl hover:bg-white/5 flex items-center justify-center gap-3 h-12 text-sm font-medium text-white transition-all duration-200 cursor-pointer active:scale-[0.98]"
-    >
-      {icon}
-      <span>{label}</span>
-    </button>
-  );
-}
-
-/**
- * 3. InputGroup Component
- */
-interface InputGroupProps {
-  label: string;
-  placeholder: string;
-  type: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  rightElement?: React.ReactNode;
-  helperText?: string;
-}
-
-function InputGroup({
-  label,
-  placeholder,
-  type,
-  value,
-  onChange,
-  rightElement,
-  helperText,
-}: InputGroupProps) {
-  return (
-    <div className="space-y-1.5 w-full text-left">
-      <label className="text-sm font-medium text-white block">{label}</label>
-      <div className="relative flex items-center">
-        <input
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange?.(e.target.value)}
-          className="bg-brand-gray border-none rounded-xl h-11 px-4 text-white placeholder:text-white/20 focus:ring-2 focus:ring-white/20 w-full outline-none transition-all text-sm"
-        />
-        {rightElement && (
-          <div className="absolute right-3.5 flex items-center">{rightElement}</div>
-        )}
-      </div>
-      {helperText && (
-        <p className="text-xs text-white/40 pt-0.5">{helperText}</p>
-      )}
-    </div>
-  );
-}
-
-/**
- * 4. PRIMEWAVE Logo SVG Component (Matching the uploaded double-mountain logo)
- */
-function PrimeWaveLogo({ className = 'w-6 h-6' }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      {/* Outer Rounded Container */}
-      <rect x="8" y="8" width="84" height="84" rx="22" ry="22" strokeWidth="7" />
-
-      {/* Top Ascending Line Accent */}
-      <line x1="18" y1="64" x2="63" y2="25" strokeWidth="7" />
-
-      {/* Right Mountain Peak Wave */}
-      <polyline points="23 72 63 34 77 68" strokeWidth="7" />
-
-      {/* Left Mountain Peak Wave */}
-      <polyline points="37 72 48 56 56 72" strokeWidth="7" />
-    </svg>
-  );
-}
+export default App;

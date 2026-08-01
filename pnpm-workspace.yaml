@@ -6,10 +6,7 @@ packages:
 allowBuilds:
   esbuild: true
   puppeteer: true
-<<<<<<< HEAD
 
-=======
->>>>>>> 1cf8e8f (Add PRIMEWAVE registration and login page UI and update Windows build config)
 
 autoInstallPeers: false
 
