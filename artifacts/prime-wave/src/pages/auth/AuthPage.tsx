@@ -44,7 +44,7 @@ export default function AuthPage({ initialMode = 'signup' }: { initialMode?: 'si
           email: formData.email,
           password: formData.password,
           role: formData.role,
-          defaultPortal: formData.role === 'company' ? 'Company Portal' : 'Student Portal'
+          defaultPortal: formData.role === 'company_hr' ? 'Company Portal' : 'Student Portal'
         });
         toast({ title: 'Success', description: 'Account created successfully!' });
         authLogin(res.data?.tokens?.accessToken || '', res.data?.user);
@@ -245,7 +245,7 @@ export default function AuthPage({ initialMode = 'signup' }: { initialMode?: 'si
                   onChange={(val) => handleInputChange('role', val)}
                   options={[
                     { label: 'Student', value: 'student' },
-                    { label: 'Company', value: 'company' },
+                    { label: 'Company', value: 'company_hr' },
                   ]}
                 />
               </>
