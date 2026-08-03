@@ -98,10 +98,13 @@ function Router() {
         <AuthGuard allowedRoles={['student']}><Portfolio /></AuthGuard>
       </Route>
       <Route path="/leaderboard">
-        <AuthGuard allowedRoles={['student']}><Leaderboard /></AuthGuard>
+        <AuthGuard allowedRoles={['student', 'admin', 'company', 'company_hr']}><Leaderboard /></AuthGuard>
       </Route>
       <Route path="/certificates">
-        <AuthGuard allowedRoles={['student']}><Certificates /></AuthGuard>
+        <AuthGuard allowedRoles={['student', 'admin', 'company', 'company_hr']}><Certificates /></AuthGuard>
+      </Route>
+      <Route path="/feedback">
+        <AuthGuard allowedRoles={['student', 'admin', 'company', 'company_hr']}><StudentFeedback /></AuthGuard>
       </Route>
       <Route path="/feedback">
         <AuthGuard allowedRoles={['student']}><StudentFeedback /></AuthGuard>
@@ -110,22 +113,31 @@ function Router() {
       {/* HR Routes */}
       <Route path="/hr" component={HrLanding} />
       <Route path="/hr/dashboard">
-        <AuthGuard allowedRoles={['company', 'company_hr']}><HrDashboard /></AuthGuard>
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><HrDashboard /></AuthGuard>
       </Route>
       <Route path="/hr/jobs">
-        <AuthGuard allowedRoles={['company', 'company_hr']}><JobsList /></AuthGuard>
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><JobsList /></AuthGuard>
       </Route>
       <Route path="/hr/jobs/create">
-        <AuthGuard allowedRoles={['company', 'company_hr']}><CreateJob /></AuthGuard>
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><CreateJob /></AuthGuard>
       </Route>
       <Route path="/hr/jobs/:id">
-        <AuthGuard allowedRoles={['company', 'company_hr']}><JobDetail /></AuthGuard>
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><JobDetail /></AuthGuard>
+      </Route>
+      <Route path="/hr/candidates">
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><CandidatesList /></AuthGuard>
       </Route>
       <Route path="/hr/candidates">
         <AuthGuard allowedRoles={['company', 'company_hr']}><CandidatesList /></AuthGuard>
       </Route>
       <Route path="/hr/candidates/:studentId">
-        <AuthGuard allowedRoles={['company', 'company_hr']}><CandidateProfile /></AuthGuard>
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><CandidateProfile /></AuthGuard>
+      </Route>
+      <Route path="/hr/interviews">
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><HrInterviews /></AuthGuard>
+      </Route>
+      <Route path="/hr/analytics">
+        <AuthGuard allowedRoles={['company', 'company_hr', 'student', 'admin']}><HrAnalytics /></AuthGuard>
       </Route>
       <Route path="/hr/interviews">
         <AuthGuard allowedRoles={['company', 'company_hr']}><HrInterviews /></AuthGuard>
@@ -136,13 +148,31 @@ function Router() {
       
       {/* Admin Routes */}
       <Route path="/admin">
-        <AuthGuard allowedRoles={['admin']}><PlatformAdmin /></AuthGuard>
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><PlatformAdmin /></AuthGuard>
       </Route>
       <Route path="/admin/students">
-        <AuthGuard allowedRoles={['admin']}><AdminStudents /></AuthGuard>
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminStudents /></AuthGuard>
       </Route>
       <Route path="/admin/companies">
-        <AuthGuard allowedRoles={['admin']}><AdminCompanies /></AuthGuard>
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminCompanies /></AuthGuard>
+      </Route>
+      <Route path="/admin/universities">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminUniversities /></AuthGuard>
+      </Route>
+      <Route path="/admin/semesters">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminSemesters /></AuthGuard>
+      </Route>
+      <Route path="/admin/assignments">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminAssignments /></AuthGuard>
+      </Route>
+      <Route path="/admin/projects">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminProjects /></AuthGuard>
+      </Route>
+      <Route path="/admin/ai-prompts">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminAiPrompts /></AuthGuard>
+      </Route>
+      <Route path="/admin/feedback">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminFeedback /></AuthGuard>
       </Route>
       <Route path="/admin/universities">
         <AuthGuard allowedRoles={['admin']}><AdminUniversities /></AuthGuard>

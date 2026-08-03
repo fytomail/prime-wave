@@ -1,87 +1,127 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SidebarLayout } from '@/components/layout/sidebar-layout';
-import { useGetFeedbackList } from '@workspace/api-client-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Search, Star } from 'lucide-react';
+import { Search, Star, MessageSquare, GraduationCap, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { format } from 'date-fns';
+import { getStudentFeedbacks, StudentFeedbackItem } from '@/lib/feedback-store';
 
 export default function AdminFeedback() {
-  const { data: feedbackRes, isLoading } = useGetFeedbackList({
-    query: { queryKey: ['adminFeedbackList'], retry: false }
-  });
+  const [feedbacks, setFeedbacks] = useState<StudentFeedbackItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  
+  const refreshFeedbacks = () => {
+    setFeedbacks(getStudentFeedbacks());
+  };
 
-  const feedbackData = (feedbackRes as any)?.data || [];
+  useEffect(() => {
+    refreshFeedbacks();
+    const handleUpdate = () => refreshFeedbacks();
+    window.addEventListener('student-feedback-updated', handleUpdate);
+    return () => window.removeEventListener('student-feedback-updated', handleUpdate);
+  }, []);
+
+  const filteredFeedbacks = feedbacks.filter(item => 
+    item.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.universityName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <SidebarLayout userType="admin">
       <div className="mb-8 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-slate-900">Student Feedback</h1>
-          <p className="text-muted-foreground mt-1">Review and manage feedback submitted by students.</p>
+          <h1 className="text-3xl font-display font-bold text-foreground">Student Feedbacks & Reviews</h1>
+          <p className="text-muted-foreground mt-1">Review feedback submitted by students across universities and service categories.</p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input placeholder="Search feedback..." className="pl-9 bg-white" />
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search by student, university, or text..." 
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="pl-9 bg-background" 
+          />
         </div>
       </div>
 
-      <Card>
+      <Card className="border-border shadow-xs">
         <CardHeader>
-          <CardTitle>Recent Feedback</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg font-bold flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary" /> Admin Feedback Portal
+            </CardTitle>
+            <Badge variant="outline" className="text-xs">
+              {filteredFeedbacks.length} Total Submissions
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Student</TableHead>
+                <TableHead>Student Name</TableHead>
+                <TableHead>University</TableHead>
+                <TableHead>Service Rating</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Rating</TableHead>
-                <TableHead className="max-w-[300px]">Comments</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead className="max-w-[320px]">Feedback Description</TableHead>
+                <TableHead>Submitted Date</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {feedbackData.map((item: any) => (
-                <TableRow key={item._id}>
-                  <TableCell className="font-medium">
-                    {item.studentName || 'Unknown Student'}
+              {filteredFeedbacks.map((item: StudentFeedbackItem) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-bold text-foreground">
+                    {item.studentName}
                   </TableCell>
-                  <TableCell>{item.category}</TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-1 text-amber-500">
-                      <span>{item.rating}</span>
-                      <Star className="w-4 h-4 fill-current" />
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <GraduationCap className="w-3.5 h-3.5 text-primary shrink-0" />
+                      {item.universityName}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1 text-amber-500 font-bold text-xs">
+                      {[...Array(5)].map((_, i) => (
+                        <Star 
+                          key={i} 
+                          className={`w-3.5 h-3.5 ${i < item.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`} 
+                        />
+                      ))}
+                      <span className="ml-1 text-foreground">{item.rating}.0</span>
                     </div>
                   </TableCell>
-                  <TableCell className="max-w-[300px] truncate text-slate-600" title={item.comments}>
-                    {item.comments}
+                  <TableCell>
+                    <Badge variant="outline" className="text-[10px]">
+                      {item.category}
+                    </Badge>
                   </TableCell>
-                  <TableCell className="text-slate-500 text-sm">
-                    {item.createdAt && !isNaN(Date.parse(item.createdAt)) 
-                      ? format(new Date(item.createdAt), 'MMM d, yyyy')
-                      : item.createdAt || 'N/A'}
+                  <TableCell className="max-w-[320px] text-xs text-foreground leading-relaxed">
+                    "{item.description}"
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-xs">
+                    {item.createdAt}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={
-                      item.status === 'Resolved' ? 'bg-green-50 text-green-700 border-green-200' :
-                      item.status === 'Reviewed' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                      'bg-slate-50 text-slate-700 border-slate-200'
-                    }>
-                      {item.status || 'Pending'}
+                    <Badge 
+                      variant="outline" 
+                      className={
+                        item.status === 'Reviewed' ? 'bg-blue-50 text-blue-700 border-blue-200 text-[10px]' :
+                        'bg-green-50 text-green-700 border-green-200 text-[10px]'
+                      }
+                    >
+                      {item.status}
                     </Badge>
                   </TableCell>
                 </TableRow>
               ))}
-              {feedbackData.length === 0 && !isLoading && (
+              {filteredFeedbacks.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">
-                    No feedback received yet.
+                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
+                    No matching student feedback found.
                   </TableCell>
                 </TableRow>
               )}
