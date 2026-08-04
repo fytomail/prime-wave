@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm run typecheck:libs && pnpm -r --if-present run build",
+    "dev": "npx pnpm --filter @workspace/prime-wave run dev",
+    "start": "npx pnpm --filter @workspace/prime-wave run dev",
+    "start:frontend": "npx pnpm --filter @workspace/prime-wave run dev",
+    "build": "npx pnpm run typecheck:libs && npx pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
-    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-    "start": "pnpm --filter @workspace/prime-wave run serve",
-    "start:frontend": "pnpm --filter @workspace/prime-wave run serve"
+    "typecheck": "npx pnpm run typecheck:libs && npx pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },
   "private": true,
   "dependencies": {
