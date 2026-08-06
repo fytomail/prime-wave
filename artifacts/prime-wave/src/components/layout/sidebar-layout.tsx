@@ -76,8 +76,8 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     { href: '/admin/semesters', label: 'Curriculum', icon: BookOpen },
     { href: '/admin/assignments', label: 'Assignments', icon: BookOpenCheck },
     { href: '/admin/projects', label: 'Projects', icon: Code2 },
-    { href: '/certificates', label: 'Certificates', icon: Award },
-    { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+    { href: '/admin/certificates', label: 'Certificates', icon: Award },
+    { href: '/admin/leaderboard', label: 'Leaderboard', icon: Trophy },
     { href: '/admin/ai-prompts', label: 'AI Prompts', icon: BrainCircuit },
     { href: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
   ];

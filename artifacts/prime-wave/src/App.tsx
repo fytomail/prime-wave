@@ -37,6 +37,8 @@ import AdminUniversities from '@/pages/admin/universities';
 import AdminSemesters from '@/pages/admin/semesters';
 import AdminAssignments from '@/pages/admin/assignments';
 import AdminProjects from '@/pages/admin/projects';
+import AdminCertificates from '@/pages/admin/certificates';
+import AdminLeaderboard from '@/pages/admin/leaderboard';
 import AdminAiPrompts from '@/pages/admin/ai-prompts';
 import AdminFeedback from '@/pages/admin/feedback';
 
@@ -167,6 +169,12 @@ function Router() {
       </Route>
       <Route path="/admin/projects">
         <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminProjects /></AuthGuard>
+      </Route>
+      <Route path="/admin/certificates">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminCertificates /></AuthGuard>
+      </Route>
+      <Route path="/admin/leaderboard">
+        <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminLeaderboard /></AuthGuard>
       </Route>
       <Route path="/admin/ai-prompts">
         <AuthGuard allowedRoles={['admin', 'student', 'company', 'company_hr']}><AdminAiPrompts /></AuthGuard>
